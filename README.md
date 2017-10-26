@@ -24,7 +24,7 @@ This project's front-end utilizes:
 ## Getting started using Graphcool
 1. Install graphcool CLI
     > npm install -g graphcool@next
-2. cd to /backend
+2. cd to /server
 3. Initialize new project with
     > graphcool init
 
