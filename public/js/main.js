@@ -59,7 +59,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.reload("data-v-763588b1", __vue__options__)
   }
 })()}
-},{"./Greeting.vue":3,"vue":62,"vue-hot-reload-api":60}],2:[function(require,module,exports){
+},{"./Greeting.vue":3,"vue":64,"vue-hot-reload-api":62}],2:[function(require,module,exports){
 ;(function(){
 "use strict";
 
@@ -87,7 +87,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.reload("data-v-5d69fbb4", __vue__options__)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":60}],3:[function(require,module,exports){
+},{"vue":64,"vue-hot-reload-api":62}],3:[function(require,module,exports){
 var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".red {\n  color: #f00;\n}")
 ;(function(){
 'use strict';
@@ -119,7 +119,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.reload("data-v-3bcdb64e", __vue__options__)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":60,"vueify/lib/insert-css":63}],4:[function(require,module,exports){
+},{"vue":64,"vue-hot-reload-api":62,"vueify/lib/insert-css":65}],4:[function(require,module,exports){
 ;(function(){
 "use strict";
 
@@ -147,44 +147,24 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.reload("data-v-d0bfd346", __vue__options__)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":60}],5:[function(require,module,exports){
+},{"vue":64,"vue-hot-reload-api":62}],5:[function(require,module,exports){
 let Vue = require('./vendor/vue')
 let Store = require('./state/store.js')
 let App = require('./components/App.vue')
 let Router = require('./routing/router.js')
-// let ApolloProvider = require('./graphql/apolloProvider.js')
-
-// console.log(ApolloProvider)
-
-let { ApolloClient, createBatchingNetworkInterface } = require('apollo-client')
-let VueApollo = require('vue-apollo')
-
-// Create the apollo client
-const apolloClient = new ApolloClient({
-  networkInterface: createBatchingNetworkInterface({
-    uri: 'http://localhost:3020/graphql',
-  }),
-  connectToDevTools: true,
-})
-
-// Install the vue plugin
-Vue.use(VueApollo)
-
-const apolloProvider = new VueApollo.ApolloProvider({
-  defaultClient: apolloClient,
-})
+let ApolloProvider = require('./server/apolloProvider.js')
 
 new Vue({
   el: '#app',
   store: Store,
   router: Router,
-  apolloProvider,
+  ApolloProvider,
   components: {
     app: App
   }
 })
 
-},{"./components/App.vue":1,"./routing/router.js":6,"./state/store.js":11,"./vendor/vue":12,"apollo-client":14,"vue-apollo":59}],6:[function(require,module,exports){
+},{"./components/App.vue":1,"./routing/router.js":6,"./server/apolloProvider.js":7,"./state/store.js":13,"./vendor/vue":14}],6:[function(require,module,exports){
 let Vue = require('../vendor/vue')
 let VueRouter = require('vue-router')
 let Empire = require('../components/Empire.vue')
@@ -201,7 +181,34 @@ const router = new VueRouter({
 
 module.exports = router
 
-},{"../components/Empire.vue":2,"../components/Rebels.vue":4,"../vendor/vue":12,"vue-router":61}],7:[function(require,module,exports){
+},{"../components/Empire.vue":2,"../components/Rebels.vue":4,"../vendor/vue":14,"vue-router":63}],7:[function(require,module,exports){
+let Vue = require('../vendor/vue')
+let { ApolloClient, createBatchingNetworkInterface } = require('apollo-client')
+let VueApollo = require('vue-apollo')
+let config = require('./graphql.json')
+
+const apolloClient = new ApolloClient({
+  networkInterface: createBatchingNetworkInterface({
+    uri: config.simpleApiEndpoint
+  }),
+  connectToDevTools: config.useDevTools
+})
+  
+Vue.use(VueApollo)
+  
+const apolloProvider = new VueApollo.ApolloProvider({
+  defaultClient: apolloClient
+})
+
+module.exports = apolloProvider
+
+},{"../vendor/vue":14,"./graphql.json":8,"apollo-client":16,"vue-apollo":61}],8:[function(require,module,exports){
+module.exports={
+    "useDevTools": true,
+    "simpleApiEndpoint": "<insert api endpoint>"
+}
+  
+},{}],9:[function(require,module,exports){
 const actions = {
   setObiAdvice: (context, text) => {
     context.commit('setObiAdvice', text)
@@ -213,7 +220,7 @@ const actions = {
 
 module.exports = actions
 
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 const state = {
   anakinMessage: 'I hate sand. It gets everywhere.',
   obiAdvice: 'Obi: I have the high ground. Dont try it.',
@@ -222,7 +229,7 @@ const state = {
 
 module.exports = state
 
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 const mapGetters = function (state, defaultObject) {
   let gettersObj = {}
   let keys = Object.keys(defaultObject)
@@ -237,7 +244,7 @@ const mapGetters = function (state, defaultObject) {
 
 module.exports = { mapGetters: mapGetters }
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 const mutations = function (state) {
   return {
     setObiAdvice (state, text) {
@@ -251,7 +258,7 @@ const mutations = function (state) {
 
 module.exports = mutations
 
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 var Vue = require('../vendor/vue')
 var Vuex = require('../vendor/vuex')
 
@@ -271,7 +278,7 @@ const store = new Vuex.Store({
 
 module.exports = store
 
-},{"../vendor/vue":12,"../vendor/vuex":13,"./actions.js":7,"./defaultState.js":8,"./getters.js":9,"./mutations.js":10}],12:[function(require,module,exports){
+},{"../vendor/vue":14,"../vendor/vuex":15,"./actions.js":9,"./defaultState.js":10,"./getters.js":11,"./mutations.js":12}],14:[function(require,module,exports){
 (function (global){
 /*!
  * Vue.js v2.5.1
@@ -10791,7 +10798,7 @@ return Vue$3;
 
 })));
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],13:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /**
  * vuex v3.0.0
  * (c) 2017 Evan You
@@ -11730,7 +11737,7 @@ var index = {
 return index;
 
 })));
-},{}],14:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 (function (process){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('whatwg-fetch'), require('graphql/language/printer'), require('redux'), require('graphql-anywhere'), require('symbol-observable'), require('apollo-link-core')) :
@@ -15641,7 +15648,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 }).call(this,require('_process'))
-},{"_process":48,"apollo-link-core":15,"graphql-anywhere":21,"graphql/language/printer":35,"redux":54,"symbol-observable":56,"whatwg-fetch":64}],15:[function(require,module,exports){
+},{"_process":50,"apollo-link-core":17,"graphql-anywhere":23,"graphql/language/printer":37,"redux":56,"symbol-observable":58,"whatwg-fetch":66}],17:[function(require,module,exports){
 "use strict";
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
@@ -15657,7 +15664,7 @@ exports.Observable = zen_observable_ts_1.default;
 __export(require("zen-observable-ts"));
 exports.default = link_1.ApolloLink;
 
-},{"./link":16,"./linkUtils":17,"zen-observable-ts":65}],16:[function(require,module,exports){
+},{"./link":18,"./linkUtils":19,"zen-observable-ts":67}],18:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -15800,7 +15807,7 @@ var FunctionLink = (function (_super) {
 }(ApolloLink));
 exports.FunctionLink = FunctionLink;
 
-},{"./linkUtils":17,"graphql-tag":24,"zen-observable-ts":65}],17:[function(require,module,exports){
+},{"./linkUtils":19,"graphql-tag":26,"zen-observable-ts":67}],19:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -15876,7 +15883,7 @@ function makePromise(observable) {
 }
 exports.makePromise = makePromise;
 
-},{"./link":16}],18:[function(require,module,exports){
+},{"./link":18}],20:[function(require,module,exports){
 "use strict";
 var storeUtils_1 = require("./storeUtils");
 function getDirectiveInfoFromField(field, variables) {
@@ -15938,7 +15945,7 @@ function shouldInclude(selection, variables) {
 }
 exports.shouldInclude = shouldInclude;
 
-},{"./storeUtils":22}],19:[function(require,module,exports){
+},{"./storeUtils":24}],21:[function(require,module,exports){
 "use strict";
 function checkDocument(doc) {
     if (doc.kind !== 'Document') {
@@ -15994,7 +16001,7 @@ function getMainDefinition(queryDoc) {
 }
 exports.getMainDefinition = getMainDefinition;
 
-},{}],20:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 "use strict";
 var getFromAST_1 = require("./getFromAST");
 var directives_1 = require("./directives");
@@ -16108,7 +16115,7 @@ function merge(dest, src) {
     });
 }
 
-},{"./directives":18,"./getFromAST":19,"./storeUtils":22}],21:[function(require,module,exports){
+},{"./directives":20,"./getFromAST":21,"./storeUtils":24}],23:[function(require,module,exports){
 "use strict";
 var utilities_1 = require("./utilities");
 exports.filter = utilities_1.filter;
@@ -16118,7 +16125,7 @@ var graphql_1 = require("./graphql");
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = graphql_1.graphql;
 
-},{"./graphql":20,"./utilities":23}],22:[function(require,module,exports){
+},{"./graphql":22,"./utilities":25}],24:[function(require,module,exports){
 "use strict";
 var SCALAR_TYPES = {
     StringValue: true,
@@ -16203,7 +16210,7 @@ function graphQLResultHasError(result) {
 }
 exports.graphQLResultHasError = graphQLResultHasError;
 
-},{}],23:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 "use strict";
 var graphql_1 = require("./graphql");
 function filter(doc, data) {
@@ -16274,7 +16281,7 @@ function propType(doc) {
 }
 exports.propType = propType;
 
-},{"./graphql":20}],24:[function(require,module,exports){
+},{"./graphql":22}],26:[function(require,module,exports){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -16454,7 +16461,7 @@ module.exports = gql;
 })));
 
 
-},{"graphql/language/parser":34}],25:[function(require,module,exports){
+},{"graphql/language/parser":36}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16570,7 +16577,7 @@ GraphQLError.prototype = Object.create(Error.prototype, {
   constructor: { value: GraphQLError },
   name: { value: 'GraphQLError' }
 });
-},{"../language/location":33}],26:[function(require,module,exports){
+},{"../language/location":35}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16604,7 +16611,7 @@ function formatError(error) {
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
-},{"../jsutils/invariant":30}],27:[function(require,module,exports){
+},{"../jsutils/invariant":32}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16646,7 +16653,7 @@ Object.defineProperty(exports, 'formatError', {
     return _formatError.formatError;
   }
 });
-},{"./GraphQLError":25,"./formatError":26,"./locatedError":28,"./syntaxError":29}],28:[function(require,module,exports){
+},{"./GraphQLError":27,"./formatError":28,"./locatedError":30,"./syntaxError":31}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16679,7 +16686,7 @@ function locatedError(originalError, nodes, path) {
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
-},{"./GraphQLError":25}],29:[function(require,module,exports){
+},{"./GraphQLError":27}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16743,7 +16750,7 @@ function whitespace(len) {
 function lpad(len, str) {
   return whitespace(len - str.length) + str;
 }
-},{"../language/location":33,"./GraphQLError":25}],30:[function(require,module,exports){
+},{"../language/location":35,"./GraphQLError":27}],32:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16765,7 +16772,7 @@ function invariant(condition, message) {
     throw new Error(message);
   }
 }
-},{}],31:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16847,7 +16854,7 @@ var TYPE_EXTENSION_DEFINITION = exports.TYPE_EXTENSION_DEFINITION = 'TypeExtensi
 // Directive Definitions
 
 var DIRECTIVE_DEFINITION = exports.DIRECTIVE_DEFINITION = 'DirectiveDefinition';
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17350,7 +17357,7 @@ function readName(source, position, line, col, prev) {
   }
   return new Tok(NAME, position, end, line, col, prev, slice.call(body, position, end));
 }
-},{"../error":27}],33:[function(require,module,exports){
+},{"../error":29}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17388,7 +17395,7 @@ function getLocation(source, position) {
 /**
  * Represents a location in a Source.
  */
-},{}],34:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18416,7 +18423,7 @@ function many(lexer, openKind, parseFn, closeKind) {
   }
   return nodes;
 }
-},{"../error":27,"./kinds":31,"./lexer":32,"./source":36}],35:[function(require,module,exports){
+},{"../error":29,"./kinds":33,"./lexer":34,"./source":38}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18699,7 +18706,7 @@ function wrap(start, maybeString, end) {
 function indent(maybeString) {
   return maybeString && maybeString.replace(/\n/g, '\n  ');
 }
-},{"./visitor":37}],36:[function(require,module,exports){
+},{"./visitor":39}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18740,7 +18747,7 @@ var Source = exports.Source = function Source(body, name, locationOffset) {
   !(this.locationOffset.line > 0) ? (0, _invariant2.default)(0, 'line in locationOffset is 1-indexed and must be positive') : void 0;
   !(this.locationOffset.column > 0) ? (0, _invariant2.default)(0, 'column in locationOffset is 1-indexed and must be positive') : void 0;
 };
-},{"../jsutils/invariant":30}],37:[function(require,module,exports){
+},{"../jsutils/invariant":32}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -19132,7 +19139,7 @@ function getVisitFn(visitor, kind, isLeaving) {
     }
   }
 }
-},{}],38:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 var root = require('./_root');
 
 /** Built-in value references. */
@@ -19140,7 +19147,7 @@ var Symbol = root.Symbol;
 
 module.exports = Symbol;
 
-},{"./_root":45}],39:[function(require,module,exports){
+},{"./_root":47}],41:[function(require,module,exports){
 var Symbol = require('./_Symbol'),
     getRawTag = require('./_getRawTag'),
     objectToString = require('./_objectToString');
@@ -19170,7 +19177,7 @@ function baseGetTag(value) {
 
 module.exports = baseGetTag;
 
-},{"./_Symbol":38,"./_getRawTag":42,"./_objectToString":43}],40:[function(require,module,exports){
+},{"./_Symbol":40,"./_getRawTag":44,"./_objectToString":45}],42:[function(require,module,exports){
 (function (global){
 /** Detect free variable `global` from Node.js. */
 var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
@@ -19178,7 +19185,7 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 module.exports = freeGlobal;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],41:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 var overArg = require('./_overArg');
 
 /** Built-in value references. */
@@ -19186,7 +19193,7 @@ var getPrototype = overArg(Object.getPrototypeOf, Object);
 
 module.exports = getPrototype;
 
-},{"./_overArg":44}],42:[function(require,module,exports){
+},{"./_overArg":46}],44:[function(require,module,exports){
 var Symbol = require('./_Symbol');
 
 /** Used for built-in method references. */
@@ -19234,7 +19241,7 @@ function getRawTag(value) {
 
 module.exports = getRawTag;
 
-},{"./_Symbol":38}],43:[function(require,module,exports){
+},{"./_Symbol":40}],45:[function(require,module,exports){
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
 
@@ -19258,7 +19265,7 @@ function objectToString(value) {
 
 module.exports = objectToString;
 
-},{}],44:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 /**
  * Creates a unary function that invokes `func` with its argument transformed.
  *
@@ -19275,7 +19282,7 @@ function overArg(func, transform) {
 
 module.exports = overArg;
 
-},{}],45:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 var freeGlobal = require('./_freeGlobal');
 
 /** Detect free variable `self`. */
@@ -19286,7 +19293,7 @@ var root = freeGlobal || freeSelf || Function('return this')();
 
 module.exports = root;
 
-},{"./_freeGlobal":40}],46:[function(require,module,exports){
+},{"./_freeGlobal":42}],48:[function(require,module,exports){
 /**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
  * and has a `typeof` result of "object".
@@ -19317,7 +19324,7 @@ function isObjectLike(value) {
 
 module.exports = isObjectLike;
 
-},{}],47:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 var baseGetTag = require('./_baseGetTag'),
     getPrototype = require('./_getPrototype'),
     isObjectLike = require('./isObjectLike');
@@ -19381,7 +19388,7 @@ function isPlainObject(value) {
 
 module.exports = isPlainObject;
 
-},{"./_baseGetTag":39,"./_getPrototype":41,"./isObjectLike":46}],48:[function(require,module,exports){
+},{"./_baseGetTag":41,"./_getPrototype":43,"./isObjectLike":48}],50:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -19567,7 +19574,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],49:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -19626,7 +19633,7 @@ function applyMiddleware() {
     };
   };
 }
-},{"./compose":52}],50:[function(require,module,exports){
+},{"./compose":54}],52:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -19678,7 +19685,7 @@ function bindActionCreators(actionCreators, dispatch) {
   }
   return boundActionCreators;
 }
-},{}],51:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -19824,7 +19831,7 @@ function combineReducers(reducers) {
   };
 }
 }).call(this,require('_process'))
-},{"./createStore":53,"./utils/warning":55,"_process":48,"lodash/isPlainObject":47}],52:[function(require,module,exports){
+},{"./createStore":55,"./utils/warning":57,"_process":50,"lodash/isPlainObject":49}],54:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -19861,7 +19868,7 @@ function compose() {
     };
   });
 }
-},{}],53:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -20123,7 +20130,7 @@ var ActionTypes = exports.ActionTypes = {
     replaceReducer: replaceReducer
   }, _ref2[_symbolObservable2['default']] = observable, _ref2;
 }
-},{"lodash/isPlainObject":47,"symbol-observable":56}],54:[function(require,module,exports){
+},{"lodash/isPlainObject":49,"symbol-observable":58}],56:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -20172,7 +20179,7 @@ exports.bindActionCreators = _bindActionCreators2['default'];
 exports.applyMiddleware = _applyMiddleware2['default'];
 exports.compose = _compose2['default'];
 }).call(this,require('_process'))
-},{"./applyMiddleware":49,"./bindActionCreators":50,"./combineReducers":51,"./compose":52,"./createStore":53,"./utils/warning":55,"_process":48}],55:[function(require,module,exports){
+},{"./applyMiddleware":51,"./bindActionCreators":52,"./combineReducers":53,"./compose":54,"./createStore":55,"./utils/warning":57,"_process":50}],57:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -20198,10 +20205,10 @@ function warning(message) {
   } catch (e) {}
   /* eslint-enable no-empty */
 }
-},{}],56:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 module.exports = require('./lib/index');
 
-},{"./lib/index":57}],57:[function(require,module,exports){
+},{"./lib/index":59}],59:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -20233,7 +20240,7 @@ if (typeof self !== 'undefined') {
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ponyfill":58}],58:[function(require,module,exports){
+},{"./ponyfill":60}],60:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -20257,7 +20264,7 @@ function symbolObservablePonyfill(root) {
 
 	return result;
 };
-},{}],59:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 (function (global){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
@@ -23838,7 +23845,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 })));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],60:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 var Vue // late bind
 var version
 var map = (window.__VUE_HOT_MAP__ = Object.create(null))
@@ -24057,7 +24064,7 @@ exports.reload = tryWrap(function (id, options) {
   })
 })
 
-},{}],61:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 (function (process){
 /**
   * vue-router v3.0.1
@@ -26686,7 +26693,7 @@ if (inBrowser && window.Vue) {
 module.exports = VueRouter;
 
 }).call(this,require('_process'))
-},{"_process":48}],62:[function(require,module,exports){
+},{"_process":50}],64:[function(require,module,exports){
 (function (process,global){
 /*!
  * Vue.js v2.5.2
@@ -34451,7 +34458,7 @@ Vue$3.nextTick(function () {
 module.exports = Vue$3;
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":48}],63:[function(require,module,exports){
+},{"_process":50}],65:[function(require,module,exports){
 var inserted = exports.cache = {}
 
 function noop () {}
@@ -34476,7 +34483,7 @@ exports.insert = function (css) {
   }
 }
 
-},{}],64:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 (function(self) {
   'use strict';
 
@@ -34939,7 +34946,7 @@ exports.insert = function (css) {
   self.fetch.polyfill = true
 })(typeof self !== 'undefined' ? self : this);
 
-},{}],65:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function cleanupSubscription(subscription) {
