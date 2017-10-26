@@ -1,5 +1,5 @@
 {
     "useDevTools": true,
-    "simpleApiEndpoint": "<insert api endpoint>"
+    "simpleApiEndpoint": "https://api.graph.cool/simple/v1/cj97yg3q91rpp0136ff05j9p0",
+    "relayApiEndpoint": "https://api.graph.cool/relay/v1/cj97yg3q91rpp0136ff05j9p0"
 }
-  

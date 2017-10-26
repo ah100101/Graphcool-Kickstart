@@ -1,0 +1,25 @@
+# project: cj97yg3q91rpp0136ff05j9p0
+# version: 2
+
+type User @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type File @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  contentType: String!
+  name: String!
+  secret: String! @isUnique
+  size: Int!
+  url: String! @isUnique
+}
+
+type Task @model {
+  id: ID! @isUnique
+  text: String!
+  done: Boolean!
+}
