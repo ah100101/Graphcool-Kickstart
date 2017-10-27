@@ -1,53 +1,24 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 ;(function(){
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _Greeting = require('./Greeting.vue');
-
-var _Greeting2 = _interopRequireDefault(_Greeting);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 exports.default = {
   data: function data() {
-    return {
-      kenobiGreeting: 'Well, hello there!',
-      grievousGreeting: 'General Kenobi...',
-      sheevGreeting: 'Did you ever hear the tragedy of Darth Plagueis The Wise?'
-    };
+    return {};
   },
 
-  components: {
-    padme: _Greeting2.default
-  },
-  methods: {
-    executeOrderAnakinSlice: function executeOrderAnakinSlice() {
-      console.log('yes my lord');
-      this.$store.dispatch('setObiAdvice', '');
-      this.$store.dispatch('setAnakinThreat', 'I HATE YOU');
-    }
-  },
-  computed: {
-    anakinMessage: function anakinMessage() {
-      return this.$store.getters.anakinMessage;
-    },
-    obiAdvice: function obiAdvice() {
-      return this.$store.getters.obiAdvice;
-    },
-    anakinThreat: function anakinThreat() {
-      return this.$store.getters.anakinThreat;
-    }
-  }
+  components: {},
+  methods: {},
+  computed: {}
 };
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('h3',{domProps:{"innerHTML":_vm._s(_vm.kenobiGreeting)}}),_c('h3',{domProps:{"innerHTML":_vm._s(_vm.grievousGreeting)}}),_c('h3',{domProps:{"innerHTML":_vm._s(_vm.sheevGreeting)}}),_c('padme'),_c('div',[_c('span',{domProps:{"innerHTML":_vm._s(_vm.obiAdvice)}})]),_c('div',[_c('span',{domProps:{"innerHTML":_vm._s(_vm.anakinThreat)}})]),_c('div',[_c('button',{on:{"click":function($event){_vm.executeOrderAnakinSlice()}}},[_vm._v("*Tries it* ")])]),_c('section',[_c('div',[_c('router-link',{attrs:{"to":"/empire"}},[_vm._v("View the Empire")])],1),_c('div',[_c('router-link',{attrs:{"to":"/rebels"}},[_vm._v("View the Rebels")])],1)]),_c('section',[_c('router-view')],1)],1)}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('section',[_c('router-view')],1)}
 __vue__options__.staticRenderFns = []
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -59,36 +30,70 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.reload("data-v-763588b1", __vue__options__)
   }
 })()}
-},{"./Greeting.vue":3,"vue":64,"vue-hot-reload-api":62}],2:[function(require,module,exports){
+},{"vue":63,"vue-hot-reload-api":61}],2:[function(require,module,exports){
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".task {\n    padding: 5px;\n}")
 ;(function(){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _TaskForm = require('./TaskForm.vue');
+
+var _TaskForm2 = _interopRequireDefault(_TaskForm);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 exports.default = {
   data: function data() {
-    return {};
+    return {
+      title: 'Tasks',
+      completedTitle: 'Completed'
+    };
+  },
+
+  components: {
+    taskform: _TaskForm2.default
+  },
+  methods: {
+    completeTask: function completeTask(name) {
+      var tasksTodo = this.tasks.filter(function (task) {
+        return task !== name;
+      });
+      var tasksCompleted = this.completedTasks;
+      tasksCompleted.push(name);
+      this.$store.dispatch('setTasks', tasksTodo);
+      this.$store.dispatch('setTasksCompleted', tasksCompleted);
+    }
+  },
+  computed: {
+    tasks: function tasks() {
+      return this.$store.getters.tasks.items;
+    },
+    completedTasks: function completedTasks() {
+      return this.$store.getters.tasks.completed;
+    }
   }
 };
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _vm._m(0)}
-__vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('h3',[_vm._v("Vadar: Now I am the mas-ta")]),_c('h3',[_vm._v("Palpatine: Fullfill your destiny")])])}]
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('section',[_c('taskform'),_c('h3',{domProps:{"innerHTML":_vm._s(_vm.title)}}),_c('section',_vm._l((_vm.tasks),function(task){return _c('div',{staticClass:"task"},[_c('button',{on:{"click":function($event){_vm.completeTask(task)}}},[_vm._v("Done")]),_c('span',{domProps:{"innerHTML":_vm._s(task)}})])})),_c('br'),_c('h3',{domProps:{"innerHTML":_vm._s(_vm.completedTitle)}}),_c('section',_vm._l((_vm.completedTasks),function(task){return _c('div',{staticClass:"task"},[_c('span',{domProps:{"innerHTML":_vm._s(task)}})])}))],1)}
+__vue__options__.staticRenderFns = []
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.accept()
+  module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-5d69fbb4", __vue__options__)
+    hotAPI.createRecord("data-v-5db51ebe", __vue__options__)
   } else {
-    hotAPI.reload("data-v-5d69fbb4", __vue__options__)
+    hotAPI.reload("data-v-5db51ebe", __vue__options__)
   }
 })()}
-},{"vue":64,"vue-hot-reload-api":62}],3:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".red {\n  color: #f00;\n}")
+},{"./TaskForm.vue":3,"vue":63,"vue-hot-reload-api":61,"vueify/lib/insert-css":64}],3:[function(require,module,exports){
 ;(function(){
 'use strict';
 
@@ -98,90 +103,38 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = {
   data: function data() {
     return {
-      msg: 'Padme: Youre going down a path I cant follow!'
+      buttonTitle: 'Add Task',
+      taskTitle: ''
     };
-  }
+  },
+
+  methods: {
+    addTask: function addTask() {
+      if (this.taskTitle !== '') {
+        this.$store.dispatch('addTask', this.taskTitle);
+        this.taskTitle = '';
+      }
+    }
+  },
+  computed: {}
 };
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('h3',{staticClass:"red"},[_vm._v(_vm._s(_vm.msg))])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('section',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.taskTitle),expression:"taskTitle"}],domProps:{"value":(_vm.taskTitle)},on:{"input":function($event){if($event.target.composing){ return; }_vm.taskTitle=$event.target.value}}}),_c('button',{domProps:{"innerHTML":_vm._s(_vm.buttonTitle)},on:{"click":function($event){_vm.addTask()}}})])}
 __vue__options__.staticRenderFns = []
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.accept()
-  module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-3bcdb64e", __vue__options__)
+    hotAPI.createRecord("data-v-5ab68eee", __vue__options__)
   } else {
-    hotAPI.reload("data-v-3bcdb64e", __vue__options__)
+    hotAPI.reload("data-v-5ab68eee", __vue__options__)
   }
 })()}
-},{"vue":64,"vue-hot-reload-api":62,"vueify/lib/insert-css":65}],4:[function(require,module,exports){
-;(function(){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = {
-  data: function data() {
-    return {};
-  }
-};
-})()
-if (module.exports.__esModule) module.exports = module.exports.default
-var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
-if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _vm._m(0)}
-__vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('h3',[_vm._v("Ben: Only a master of evil, Darth")]),_c('h3',[_vm._v("Luke: Arrhhghghghghghghhhhh!")])])}]
-if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-d0bfd346", __vue__options__)
-  } else {
-    hotAPI.reload("data-v-d0bfd346", __vue__options__)
-  }
-})()}
-},{"vue":64,"vue-hot-reload-api":62}],5:[function(require,module,exports){
-let Vue = require('./vendor/vue')
-let Store = require('./state/store.js')
-let App = require('./components/App.vue')
-let Router = require('./routing/router.js')
-let ApolloProvider = require('./server/apolloProvider.js')
-
-new Vue({
-  el: '#app',
-  store: Store,
-  router: Router,
-  ApolloProvider,
-  components: {
-    app: App
-  }
-})
-
-},{"./components/App.vue":1,"./routing/router.js":6,"./server/apolloProvider.js":7,"./state/store.js":13,"./vendor/vue":14}],6:[function(require,module,exports){
-let Vue = require('../vendor/vue')
-let VueRouter = require('vue-router')
-let Empire = require('../components/Empire.vue')
-let Rebels = require('../components/Rebels.vue')
-
-Vue.use(VueRouter)
-
-const router = new VueRouter({
-  routes: [
-    { path: '/empire', component: Empire },
-    { path: '/rebels', component: Rebels }
-  ]
-})
-
-module.exports = router
-
-},{"../components/Empire.vue":2,"../components/Rebels.vue":4,"../vendor/vue":14,"vue-router":63}],7:[function(require,module,exports){
+},{"vue":63,"vue-hot-reload-api":61}],4:[function(require,module,exports){
 let Vue = require('../vendor/vue')
 let { ApolloClient, createBatchingNetworkInterface } = require('apollo-client')
 let VueApollo = require('vue-apollo')
@@ -202,34 +155,84 @@ const apolloProvider = new VueApollo.ApolloProvider({
 
 module.exports = apolloProvider
 
-},{"../vendor/vue":14,"./graphql.json":8,"apollo-client":16,"vue-apollo":61}],8:[function(require,module,exports){
+},{"../vendor/vue":13,"./graphql.json":5,"apollo-client":15,"vue-apollo":60}],5:[function(require,module,exports){
 module.exports={
     "useDevTools": true,
-    "simpleApiEndpoint": "<insert api endpoint>"
+    "simpleApiEndpoint": "https://api.graph.cool/simple/v1/cj99ayg117f5401353arjtfgy",
+    "relayApiEndpoint": "https://api.graph.cool/relay/v1/cj99ayg117f5401353arjtfgy"
 }
-  
-},{}],9:[function(require,module,exports){
+
+},{}],6:[function(require,module,exports){
+let Vue = require('./vendor/vue')
+let Store = require('./state/store.js')
+let App = require('./components/App.vue')
+let Router = require('./routing/router.js')
+let ApolloProvider = require('./graphql/apolloProvider.js')
+
+new Vue({
+  el: '#app',
+  store: Store,
+  router: Router,
+  ApolloProvider,
+  components: {
+    app: App
+  }
+})
+
+},{"./components/App.vue":1,"./graphql/apolloProvider.js":4,"./routing/router.js":7,"./state/store.js":12,"./vendor/vue":13}],7:[function(require,module,exports){
+let Vue = require('../vendor/vue')
+let VueRouter = require('vue-router')
+let List = require('../components/List.vue')
+
+Vue.use(VueRouter)
+
+const router = new VueRouter({
+  routes: [
+    { path: '/', component: List }
+  ]
+})
+
+module.exports = router
+
+},{"../components/List.vue":2,"../vendor/vue":13,"vue-router":62}],8:[function(require,module,exports){
 const actions = {
   setObiAdvice: (context, text) => {
     context.commit('setObiAdvice', text)
   },
   setAnakinThreat: (context, text) => {
     context.commit('setAnakinThreat', text)
+  },
+  setTasks: (context, tasks) => {
+    context.commit('setTasks', tasks)
+  },
+  setTasksCompleted: (context, tasks) => {
+    context.commit('setTasksCompleted', tasks)
+  },
+  addTask: (context, task) => {
+    context.commit('addTask', task)
   }
 }
 
 module.exports = actions
 
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 const state = {
   anakinMessage: 'I hate sand. It gets everywhere.',
   obiAdvice: 'Obi: I have the high ground. Dont try it.',
-  anakinThreat: 'Anakin: You underestimate my power!'
+  anakinThreat: 'Anakin: You underestimate my power!',
+  tasks: {
+    items: [
+      'Task 1',
+      'Task A',
+      'Task b'
+    ],
+    completed: []
+  }
 }
 
 module.exports = state
 
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 const mapGetters = function (state, defaultObject) {
   let gettersObj = {}
   let keys = Object.keys(defaultObject)
@@ -244,7 +247,7 @@ const mapGetters = function (state, defaultObject) {
 
 module.exports = { mapGetters: mapGetters }
 
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 const mutations = function (state) {
   return {
     setObiAdvice (state, text) {
@@ -252,13 +255,22 @@ const mutations = function (state) {
     },
     setAnakinThreat (state, text) {
       state.anakinThreat = text
+    },
+    setTasks (state, tasks) {
+      state.tasks.items = tasks
+    },
+    setTasksCompleted (state, tasks) {
+      state.tasks.completed = tasks
+    },
+    addTask (state, task) {
+      state.tasks.items.push(task)
     }
   }
 }
 
 module.exports = mutations
 
-},{}],13:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var Vue = require('../vendor/vue')
 var Vuex = require('../vendor/vuex')
 
@@ -278,7 +290,7 @@ const store = new Vuex.Store({
 
 module.exports = store
 
-},{"../vendor/vue":14,"../vendor/vuex":15,"./actions.js":9,"./defaultState.js":10,"./getters.js":11,"./mutations.js":12}],14:[function(require,module,exports){
+},{"../vendor/vue":13,"../vendor/vuex":14,"./actions.js":8,"./defaultState.js":9,"./getters.js":10,"./mutations.js":11}],13:[function(require,module,exports){
 (function (global){
 /*!
  * Vue.js v2.5.1
@@ -10798,7 +10810,7 @@ return Vue$3;
 
 })));
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],15:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /**
  * vuex v3.0.0
  * (c) 2017 Evan You
@@ -11737,7 +11749,7 @@ var index = {
 return index;
 
 })));
-},{}],16:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 (function (process){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('whatwg-fetch'), require('graphql/language/printer'), require('redux'), require('graphql-anywhere'), require('symbol-observable'), require('apollo-link-core')) :
@@ -15648,7 +15660,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 }).call(this,require('_process'))
-},{"_process":50,"apollo-link-core":17,"graphql-anywhere":23,"graphql/language/printer":37,"redux":56,"symbol-observable":58,"whatwg-fetch":66}],17:[function(require,module,exports){
+},{"_process":49,"apollo-link-core":16,"graphql-anywhere":22,"graphql/language/printer":36,"redux":55,"symbol-observable":57,"whatwg-fetch":65}],16:[function(require,module,exports){
 "use strict";
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
@@ -15664,7 +15676,7 @@ exports.Observable = zen_observable_ts_1.default;
 __export(require("zen-observable-ts"));
 exports.default = link_1.ApolloLink;
 
-},{"./link":18,"./linkUtils":19,"zen-observable-ts":67}],18:[function(require,module,exports){
+},{"./link":17,"./linkUtils":18,"zen-observable-ts":66}],17:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -15807,7 +15819,7 @@ var FunctionLink = (function (_super) {
 }(ApolloLink));
 exports.FunctionLink = FunctionLink;
 
-},{"./linkUtils":19,"graphql-tag":26,"zen-observable-ts":67}],19:[function(require,module,exports){
+},{"./linkUtils":18,"graphql-tag":25,"zen-observable-ts":66}],18:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -15883,7 +15895,7 @@ function makePromise(observable) {
 }
 exports.makePromise = makePromise;
 
-},{"./link":18}],20:[function(require,module,exports){
+},{"./link":17}],19:[function(require,module,exports){
 "use strict";
 var storeUtils_1 = require("./storeUtils");
 function getDirectiveInfoFromField(field, variables) {
@@ -15945,7 +15957,7 @@ function shouldInclude(selection, variables) {
 }
 exports.shouldInclude = shouldInclude;
 
-},{"./storeUtils":24}],21:[function(require,module,exports){
+},{"./storeUtils":23}],20:[function(require,module,exports){
 "use strict";
 function checkDocument(doc) {
     if (doc.kind !== 'Document') {
@@ -16001,7 +16013,7 @@ function getMainDefinition(queryDoc) {
 }
 exports.getMainDefinition = getMainDefinition;
 
-},{}],22:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 "use strict";
 var getFromAST_1 = require("./getFromAST");
 var directives_1 = require("./directives");
@@ -16115,7 +16127,7 @@ function merge(dest, src) {
     });
 }
 
-},{"./directives":20,"./getFromAST":21,"./storeUtils":24}],23:[function(require,module,exports){
+},{"./directives":19,"./getFromAST":20,"./storeUtils":23}],22:[function(require,module,exports){
 "use strict";
 var utilities_1 = require("./utilities");
 exports.filter = utilities_1.filter;
@@ -16125,7 +16137,7 @@ var graphql_1 = require("./graphql");
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = graphql_1.graphql;
 
-},{"./graphql":22,"./utilities":25}],24:[function(require,module,exports){
+},{"./graphql":21,"./utilities":24}],23:[function(require,module,exports){
 "use strict";
 var SCALAR_TYPES = {
     StringValue: true,
@@ -16210,7 +16222,7 @@ function graphQLResultHasError(result) {
 }
 exports.graphQLResultHasError = graphQLResultHasError;
 
-},{}],25:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 "use strict";
 var graphql_1 = require("./graphql");
 function filter(doc, data) {
@@ -16281,7 +16293,7 @@ function propType(doc) {
 }
 exports.propType = propType;
 
-},{"./graphql":22}],26:[function(require,module,exports){
+},{"./graphql":21}],25:[function(require,module,exports){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -16461,7 +16473,7 @@ module.exports = gql;
 })));
 
 
-},{"graphql/language/parser":36}],27:[function(require,module,exports){
+},{"graphql/language/parser":35}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16577,7 +16589,7 @@ GraphQLError.prototype = Object.create(Error.prototype, {
   constructor: { value: GraphQLError },
   name: { value: 'GraphQLError' }
 });
-},{"../language/location":35}],28:[function(require,module,exports){
+},{"../language/location":34}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16611,7 +16623,7 @@ function formatError(error) {
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
-},{"../jsutils/invariant":32}],29:[function(require,module,exports){
+},{"../jsutils/invariant":31}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16653,7 +16665,7 @@ Object.defineProperty(exports, 'formatError', {
     return _formatError.formatError;
   }
 });
-},{"./GraphQLError":27,"./formatError":28,"./locatedError":30,"./syntaxError":31}],30:[function(require,module,exports){
+},{"./GraphQLError":26,"./formatError":27,"./locatedError":29,"./syntaxError":30}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16686,7 +16698,7 @@ function locatedError(originalError, nodes, path) {
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
-},{"./GraphQLError":27}],31:[function(require,module,exports){
+},{"./GraphQLError":26}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16750,7 +16762,7 @@ function whitespace(len) {
 function lpad(len, str) {
   return whitespace(len - str.length) + str;
 }
-},{"../language/location":35,"./GraphQLError":27}],32:[function(require,module,exports){
+},{"../language/location":34,"./GraphQLError":26}],31:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16772,7 +16784,7 @@ function invariant(condition, message) {
     throw new Error(message);
   }
 }
-},{}],33:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16854,7 +16866,7 @@ var TYPE_EXTENSION_DEFINITION = exports.TYPE_EXTENSION_DEFINITION = 'TypeExtensi
 // Directive Definitions
 
 var DIRECTIVE_DEFINITION = exports.DIRECTIVE_DEFINITION = 'DirectiveDefinition';
-},{}],34:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17357,7 +17369,7 @@ function readName(source, position, line, col, prev) {
   }
   return new Tok(NAME, position, end, line, col, prev, slice.call(body, position, end));
 }
-},{"../error":29}],35:[function(require,module,exports){
+},{"../error":28}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17395,7 +17407,7 @@ function getLocation(source, position) {
 /**
  * Represents a location in a Source.
  */
-},{}],36:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18423,7 +18435,7 @@ function many(lexer, openKind, parseFn, closeKind) {
   }
   return nodes;
 }
-},{"../error":29,"./kinds":33,"./lexer":34,"./source":38}],37:[function(require,module,exports){
+},{"../error":28,"./kinds":32,"./lexer":33,"./source":37}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18706,7 +18718,7 @@ function wrap(start, maybeString, end) {
 function indent(maybeString) {
   return maybeString && maybeString.replace(/\n/g, '\n  ');
 }
-},{"./visitor":39}],38:[function(require,module,exports){
+},{"./visitor":38}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18747,7 +18759,7 @@ var Source = exports.Source = function Source(body, name, locationOffset) {
   !(this.locationOffset.line > 0) ? (0, _invariant2.default)(0, 'line in locationOffset is 1-indexed and must be positive') : void 0;
   !(this.locationOffset.column > 0) ? (0, _invariant2.default)(0, 'column in locationOffset is 1-indexed and must be positive') : void 0;
 };
-},{"../jsutils/invariant":32}],39:[function(require,module,exports){
+},{"../jsutils/invariant":31}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -19139,7 +19151,7 @@ function getVisitFn(visitor, kind, isLeaving) {
     }
   }
 }
-},{}],40:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 var root = require('./_root');
 
 /** Built-in value references. */
@@ -19147,7 +19159,7 @@ var Symbol = root.Symbol;
 
 module.exports = Symbol;
 
-},{"./_root":47}],41:[function(require,module,exports){
+},{"./_root":46}],40:[function(require,module,exports){
 var Symbol = require('./_Symbol'),
     getRawTag = require('./_getRawTag'),
     objectToString = require('./_objectToString');
@@ -19177,7 +19189,7 @@ function baseGetTag(value) {
 
 module.exports = baseGetTag;
 
-},{"./_Symbol":40,"./_getRawTag":44,"./_objectToString":45}],42:[function(require,module,exports){
+},{"./_Symbol":39,"./_getRawTag":43,"./_objectToString":44}],41:[function(require,module,exports){
 (function (global){
 /** Detect free variable `global` from Node.js. */
 var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
@@ -19185,7 +19197,7 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 module.exports = freeGlobal;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],43:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 var overArg = require('./_overArg');
 
 /** Built-in value references. */
@@ -19193,7 +19205,7 @@ var getPrototype = overArg(Object.getPrototypeOf, Object);
 
 module.exports = getPrototype;
 
-},{"./_overArg":46}],44:[function(require,module,exports){
+},{"./_overArg":45}],43:[function(require,module,exports){
 var Symbol = require('./_Symbol');
 
 /** Used for built-in method references. */
@@ -19241,7 +19253,7 @@ function getRawTag(value) {
 
 module.exports = getRawTag;
 
-},{"./_Symbol":40}],45:[function(require,module,exports){
+},{"./_Symbol":39}],44:[function(require,module,exports){
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
 
@@ -19265,7 +19277,7 @@ function objectToString(value) {
 
 module.exports = objectToString;
 
-},{}],46:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /**
  * Creates a unary function that invokes `func` with its argument transformed.
  *
@@ -19282,7 +19294,7 @@ function overArg(func, transform) {
 
 module.exports = overArg;
 
-},{}],47:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 var freeGlobal = require('./_freeGlobal');
 
 /** Detect free variable `self`. */
@@ -19293,7 +19305,7 @@ var root = freeGlobal || freeSelf || Function('return this')();
 
 module.exports = root;
 
-},{"./_freeGlobal":42}],48:[function(require,module,exports){
+},{"./_freeGlobal":41}],47:[function(require,module,exports){
 /**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
  * and has a `typeof` result of "object".
@@ -19324,7 +19336,7 @@ function isObjectLike(value) {
 
 module.exports = isObjectLike;
 
-},{}],49:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 var baseGetTag = require('./_baseGetTag'),
     getPrototype = require('./_getPrototype'),
     isObjectLike = require('./isObjectLike');
@@ -19388,7 +19400,7 @@ function isPlainObject(value) {
 
 module.exports = isPlainObject;
 
-},{"./_baseGetTag":41,"./_getPrototype":43,"./isObjectLike":48}],50:[function(require,module,exports){
+},{"./_baseGetTag":40,"./_getPrototype":42,"./isObjectLike":47}],49:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -19574,7 +19586,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],51:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -19633,7 +19645,7 @@ function applyMiddleware() {
     };
   };
 }
-},{"./compose":54}],52:[function(require,module,exports){
+},{"./compose":53}],51:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -19685,7 +19697,7 @@ function bindActionCreators(actionCreators, dispatch) {
   }
   return boundActionCreators;
 }
-},{}],53:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -19831,7 +19843,7 @@ function combineReducers(reducers) {
   };
 }
 }).call(this,require('_process'))
-},{"./createStore":55,"./utils/warning":57,"_process":50,"lodash/isPlainObject":49}],54:[function(require,module,exports){
+},{"./createStore":54,"./utils/warning":56,"_process":49,"lodash/isPlainObject":48}],53:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -19868,7 +19880,7 @@ function compose() {
     };
   });
 }
-},{}],55:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -20130,7 +20142,7 @@ var ActionTypes = exports.ActionTypes = {
     replaceReducer: replaceReducer
   }, _ref2[_symbolObservable2['default']] = observable, _ref2;
 }
-},{"lodash/isPlainObject":49,"symbol-observable":58}],56:[function(require,module,exports){
+},{"lodash/isPlainObject":48,"symbol-observable":57}],55:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -20179,7 +20191,7 @@ exports.bindActionCreators = _bindActionCreators2['default'];
 exports.applyMiddleware = _applyMiddleware2['default'];
 exports.compose = _compose2['default'];
 }).call(this,require('_process'))
-},{"./applyMiddleware":51,"./bindActionCreators":52,"./combineReducers":53,"./compose":54,"./createStore":55,"./utils/warning":57,"_process":50}],57:[function(require,module,exports){
+},{"./applyMiddleware":50,"./bindActionCreators":51,"./combineReducers":52,"./compose":53,"./createStore":54,"./utils/warning":56,"_process":49}],56:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -20205,10 +20217,10 @@ function warning(message) {
   } catch (e) {}
   /* eslint-enable no-empty */
 }
-},{}],58:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 module.exports = require('./lib/index');
 
-},{"./lib/index":59}],59:[function(require,module,exports){
+},{"./lib/index":58}],58:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -20240,7 +20252,7 @@ if (typeof self !== 'undefined') {
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ponyfill":60}],60:[function(require,module,exports){
+},{"./ponyfill":59}],59:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -20264,7 +20276,7 @@ function symbolObservablePonyfill(root) {
 
 	return result;
 };
-},{}],61:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 (function (global){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
@@ -23845,7 +23857,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 })));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],62:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 var Vue // late bind
 var version
 var map = (window.__VUE_HOT_MAP__ = Object.create(null))
@@ -24064,7 +24076,7 @@ exports.reload = tryWrap(function (id, options) {
   })
 })
 
-},{}],63:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 (function (process){
 /**
   * vue-router v3.0.1
@@ -26693,7 +26705,7 @@ if (inBrowser && window.Vue) {
 module.exports = VueRouter;
 
 }).call(this,require('_process'))
-},{"_process":50}],64:[function(require,module,exports){
+},{"_process":49}],63:[function(require,module,exports){
 (function (process,global){
 /*!
  * Vue.js v2.5.2
@@ -34458,7 +34470,7 @@ Vue$3.nextTick(function () {
 module.exports = Vue$3;
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":50}],65:[function(require,module,exports){
+},{"_process":49}],64:[function(require,module,exports){
 var inserted = exports.cache = {}
 
 function noop () {}
@@ -34483,7 +34495,7 @@ exports.insert = function (css) {
   }
 }
 
-},{}],66:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 (function(self) {
   'use strict';
 
@@ -34946,7 +34958,7 @@ exports.insert = function (css) {
   self.fetch.polyfill = true
 })(typeof self !== 'undefined' ? self : this);
 
-},{}],67:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function cleanupSubscription(subscription) {
@@ -35346,4 +35358,4 @@ var Observable = (function () {
 }());
 exports.default = Observable;
 
-},{}]},{},[5]);
+},{}]},{},[6]);
