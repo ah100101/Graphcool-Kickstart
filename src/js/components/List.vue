@@ -23,13 +23,31 @@
 
 <script>
 import TaskForm from './TaskForm.vue'
+import gql from 'graphql-tag'
+
+const TaskQuery = gql `
+    query allTasks {
+      allPosts(orderBy: createdAt_DESC) {
+        id
+        text
+        done
+      }
+    }
+  `
 
 export default {
-  data () {
+  data: () => {
     return {
+      allTasks: {},
       title: 'Tasks',
       completedTitle: 'Completed'
     }
+  },
+  apollo: {
+  //   allTasks: {
+  //     query: TaskQuery,
+  //     loadingKey: 'loading',
+  //   },
   },
   components: {
     taskform: TaskForm
