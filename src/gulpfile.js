@@ -66,11 +66,11 @@ gulp.task('scripts', () => {
     .transform(vueify)
     .bundle()
     .pipe(source(paths.scripts.name))
-    .pipe(gulp.dest(paths.scripts.dest))  
+    .pipe(gulp.dest(paths.scripts.dest))
 })
 
 gulp.task('scripts:watch', ['scripts'], () =>
-  gulp.watch(paths.javascript.src, ['scripts'])
+  gulp.watch(paths.scripts.src, ['scripts'])
 )
 
 // Clean

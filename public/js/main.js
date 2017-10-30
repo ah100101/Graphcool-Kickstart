@@ -43,7 +43,7 @@ var _taggedTemplateLiteral2 = require('babel-runtime/helpers/taggedTemplateLiter
 
 var _taggedTemplateLiteral3 = _interopRequireDefault(_taggedTemplateLiteral2);
 
-var _templateObject = (0, _taggedTemplateLiteral3.default)(['\n    query allTasks {\n      allPosts(orderBy: createdAt_DESC) {\n        id\n        text\n        done\n      }\n    }\n  '], ['\n    query allTasks {\n      allPosts(orderBy: createdAt_DESC) {\n        id\n        text\n        done\n      }\n    }\n  ']);
+var _templateObject = (0, _taggedTemplateLiteral3.default)(['\n    query allTasks {\n      allTasks(orderBy: text_DESC) {\n        id\n        text\n        done\n      }\n    }\n  '], ['\n    query allTasks {\n      allTasks(orderBy: text_DESC) {\n        id\n        text\n        done\n      }\n    }\n  ']);
 
 var _TaskForm = require('./TaskForm.vue');
 
@@ -65,17 +65,22 @@ exports.default = {
       completedTitle: 'Completed'
     };
   },
-  apollo: {},
+  apollo: {
+    allTasks: {
+      query: TaskQuery,
+      loadingKey: 'loading'
+    }
+  },
   components: {
     taskform: _TaskForm2.default
   },
   methods: {
-    completeTask: function completeTask(name) {
+    completeTask: function completeTask(completedTask) {
       var tasksTodo = this.tasks.filter(function (task) {
-        return task !== name;
+        return task.id !== completedTask.id;
       });
       var tasksCompleted = this.completedTasks;
-      tasksCompleted.push(name);
+      tasksCompleted.push(completedTask);
       this.$store.dispatch('setTasks', tasksTodo);
       this.$store.dispatch('setTasksCompleted', tasksCompleted);
     }
@@ -93,7 +98,7 @@ exports.default = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('section',[_c('taskform'),_c('h3',{domProps:{"innerHTML":_vm._s(_vm.title)}}),_c('section',_vm._l((_vm.tasks),function(task){return _c('div',{staticClass:"task"},[_c('button',{on:{"click":function($event){_vm.completeTask(task)}}},[_vm._v("Done")]),_c('span',{domProps:{"innerHTML":_vm._s(task)}})])})),_c('br'),_c('h3',{domProps:{"innerHTML":_vm._s(_vm.completedTitle)}}),_c('section',_vm._l((_vm.completedTasks),function(task){return _c('div',{staticClass:"task"},[_c('span',{domProps:{"innerHTML":_vm._s(task)}})])}))],1)}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('section',[_c('taskform'),_c('h3',{domProps:{"innerHTML":_vm._s(_vm.title)}}),_c('section',_vm._l((_vm.allTasks),function(task){return _c('div',{staticClass:"task"},[_c('button',{on:{"click":function($event){_vm.completeTask(task)}}},[_vm._v("Done")]),_c('span',{domProps:{"innerHTML":_vm._s(task.text)}})])})),_c('br'),_c('h3',{domProps:{"innerHTML":_vm._s(_vm.completedTitle)}}),_c('section',_vm._l((_vm.completedTasks),function(task){return _c('div',{staticClass:"task"},[_c('span',{domProps:{"innerHTML":_vm._s(task.text)}})])}))],1)}
 __vue__options__.staticRenderFns = []
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
