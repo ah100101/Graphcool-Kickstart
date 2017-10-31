@@ -118,6 +118,21 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _taggedTemplateLiteral2 = require('babel-runtime/helpers/taggedTemplateLiteral');
+
+var _taggedTemplateLiteral3 = _interopRequireDefault(_taggedTemplateLiteral2);
+
+var _templateObject = (0, _taggedTemplateLiteral3.default)(['\n    mutation createTask($text: String!, $done: Boolean!) {\n      createTask(text: $text, done: $done) {\n        id\n        text\n        done\n      }\n    }\n  '], ['\n    mutation createTask($text: String!, $done: Boolean!) {\n      createTask(text: $text, done: $done) {\n        id\n        text\n        done\n      }\n    }\n  ']);
+
+var _graphqlTag = require('graphql-tag');
+
+var _graphqlTag2 = _interopRequireDefault(_graphqlTag);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var createTask = (0, _graphqlTag2.default)(_templateObject);
+
 exports.default = {
   data: function data() {
     return {
@@ -127,10 +142,32 @@ exports.default = {
   },
 
   methods: {
-    addTask: function addTask() {
+    addTask_old: function addTask_old() {
       if (this.taskTitle !== '') {
         this.$store.dispatch('addTask', this.taskTitle);
         this.taskTitle = '';
+      }
+    },
+    addTask: function addTask() {
+      var _this = this;
+
+      if (this.taskTitle !== '') {
+
+        var text = this.taskTitle;
+        var done = false;
+
+        this.$apollo.mutate({
+          mutation: createTask,
+          variables: {
+            text: text,
+            done: done
+          }
+        }).then(function (_ref) {
+          var data = _ref.data;
+
+          _this.$store.dispatch('addTask', data.createTask);
+          _this.taskTitle = '';
+        });
       }
     }
   },
@@ -152,7 +189,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.reload("data-v-5ab68eee", __vue__options__)
   }
 })()}
-},{"vue":103,"vue-hot-reload-api":101}],4:[function(require,module,exports){
+},{"babel-runtime/helpers/taggedTemplateLiteral":21,"graphql-tag":65,"vue":103,"vue-hot-reload-api":101}],4:[function(require,module,exports){
 let Vue = require('../vendor/vue')
 let { ApolloClient, createBatchingNetworkInterface } = require('apollo-client')
 let VueApollo = require('vue-apollo')
