@@ -9,7 +9,7 @@
         taskform
         h3(v-html='title')
         section
-            div(v-for='task in allTasks' 
+            div(v-for='task in tasks' 
                 class = 'task')
                 button(v-on:click='completeTask(task)') Done
                 span(v-html='task.text')
@@ -23,31 +23,23 @@
 
 <script>
 import TaskForm from './TaskForm.vue'
-import gql from 'graphql-tag'
-
-const TaskQuery = gql `
-    query allTasks {
-      allTasks(orderBy: text_DESC) {
-        id
-        text
-        done
-      }
-    }
-  `
+import TaskQueries from '../graphql/queries/tasks.js'
 
 export default {
   data: () => {
     return {
-      allTasks: {},
       title: 'Tasks',
       completedTitle: 'Completed'
     }
   },
   apollo: {
     allTasks: {
-      query: TaskQuery,
+      query: TaskQueries.ascending,
       loadingKey: 'loading',
     },
+  },
+  created: function() {
+    this.getTasks()
   },
   components: {
     taskform: TaskForm
@@ -59,6 +51,16 @@ export default {
       tasksCompleted.push(completedTask)
       this.$store.dispatch('setTasks', tasksTodo)
       this.$store.dispatch('setTasksCompleted', tasksCompleted)
+    },
+    getTasks: function() {
+      let taskQuery = this.$apollo.queries.allTasks
+        .refetch()
+        .then( ({ data }) => {
+          this.$store.dispatch('setTasks', data.allTasks)
+        })
+        .catch( (error) => {
+          console.log(error)
+        })
     }
   },
   computed: {
