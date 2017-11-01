@@ -30,7 +30,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.reload("data-v-763588b1", __vue__options__)
   }
 })()}
-},{"vue":104,"vue-hot-reload-api":102}],2:[function(require,module,exports){
+},{"vue":65,"vue-hot-reload-api":63}],2:[function(require,module,exports){
 var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".task {\n    padding: 5px;\n}")
 ;(function(){
 'use strict';
@@ -47,6 +47,10 @@ var _tasks = require('../graphql/queries/tasks.js');
 
 var _tasks2 = _interopRequireDefault(_tasks);
 
+var _tasks3 = require('../graphql/mutations/tasks.js');
+
+var _tasks4 = _interopRequireDefault(_tasks3);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
@@ -62,33 +66,47 @@ exports.default = {
       loadingKey: 'loading'
     }
   },
-  created: function created() {
-    this.getTasks();
+  created: async function created() {
+    var tasks = await this.getTasks();
+    if (tasks) {
+      this.$store.dispatch('setTasks', tasks);
+    }
   },
   components: {
     taskform: _TaskForm2.default
   },
   methods: {
     completeTask: function completeTask(completedTask) {
+      this.deleteTask(completedTask.id);
+
       var tasksTodo = this.tasks.filter(function (task) {
         return task.id !== completedTask.id;
       });
       var tasksCompleted = this.completedTasks;
       tasksCompleted.push(completedTask);
+
       this.$store.dispatch('setTasks', tasksTodo);
       this.$store.dispatch('setTasksCompleted', tasksCompleted);
     },
-    getTasks: function getTasks() {
-      var _this = this;
-
-      var state = this;
-      var taskQuery = this.$apollo.queries.allTasks.refetch().then(function (_ref) {
-        var data = _ref.data;
-
-        _this.$store.dispatch('setTasks', data.allTasks);
-      }).catch(function (error) {
+    deleteTask: async function deleteTask(id) {
+      try {
+        var result = await this.$apollo.mutate({
+          mutation: _tasks4.default.deleteTask,
+          variables: { id: id }
+        });
+      } catch (error) {
         console.log(error);
-      });
+        return;
+      }
+    },
+    getTasks: async function getTasks() {
+      try {
+        var result = await this.$apollo.queries.allTasks.refetch();
+        return result.data.allTasks;
+      } catch (error) {
+        console.log(error);
+        return;
+      }
     }
   },
   computed: {
@@ -117,7 +135,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.reload("data-v-5db51ebe", __vue__options__)
   }
 })()}
-},{"../graphql/queries/tasks.js":6,"./TaskForm.vue":3,"vue":104,"vue-hot-reload-api":102,"vueify/lib/insert-css":105}],3:[function(require,module,exports){
+},{"../graphql/mutations/tasks.js":6,"../graphql/queries/tasks.js":7,"./TaskForm.vue":3,"vue":65,"vue-hot-reload-api":63,"vueify/lib/insert-css":66}],3:[function(require,module,exports){
 ;(function(){
 'use strict';
 
@@ -125,19 +143,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _taggedTemplateLiteral2 = require('babel-runtime/helpers/taggedTemplateLiteral');
+var _tasks = require('../graphql/mutations/tasks.js');
 
-var _taggedTemplateLiteral3 = _interopRequireDefault(_taggedTemplateLiteral2);
-
-var _templateObject = (0, _taggedTemplateLiteral3.default)(['\n    mutation createTask($text: String!, $done: Boolean!) {\n      createTask(text: $text, done: $done) {\n        id\n        text\n        done\n      }\n    }\n  '], ['\n    mutation createTask($text: String!, $done: Boolean!) {\n      createTask(text: $text, done: $done) {\n        id\n        text\n        done\n      }\n    }\n  ']);
-
-var _graphqlTag = require('graphql-tag');
-
-var _graphqlTag2 = _interopRequireDefault(_graphqlTag);
+var _tasks2 = _interopRequireDefault(_tasks);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var createTask = (0, _graphqlTag2.default)(_templateObject);
 
 exports.default = {
   data: function data() {
@@ -148,12 +158,6 @@ exports.default = {
   },
 
   methods: {
-    addTask_old: function addTask_old() {
-      if (this.taskTitle !== '') {
-        this.$store.dispatch('addTask', this.taskTitle);
-        this.taskTitle = '';
-      }
-    },
     addTask: function addTask() {
       var _this = this;
 
@@ -163,7 +167,7 @@ exports.default = {
         var done = false;
 
         this.$apollo.mutate({
-          mutation: createTask,
+          mutation: _tasks2.default.createTask,
           variables: {
             text: text,
             done: done
@@ -195,7 +199,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.reload("data-v-5ab68eee", __vue__options__)
   }
 })()}
-},{"babel-runtime/helpers/taggedTemplateLiteral":22,"graphql-tag":66,"vue":104,"vue-hot-reload-api":102}],4:[function(require,module,exports){
+},{"../graphql/mutations/tasks.js":6,"vue":65,"vue-hot-reload-api":63}],4:[function(require,module,exports){
 let Vue = require('../vendor/vue')
 let { ApolloClient, createBatchingNetworkInterface } = require('apollo-client')
 let VueApollo = require('vue-apollo')
@@ -216,7 +220,7 @@ const apolloProvider = new VueApollo.ApolloProvider({
 
 module.exports = apolloProvider
 
-},{"../vendor/vue":14,"./graphql.json":5,"apollo-client":16,"vue-apollo":101}],5:[function(require,module,exports){
+},{"../vendor/vue":15,"./graphql.json":5,"apollo-client":17,"vue-apollo":62}],5:[function(require,module,exports){
 module.exports={
     "useDevTools": true,
     "simpleApiEndpoint": "https://api.graph.cool/simple/v1/cj99ayg117f5401353arjtfgy",
@@ -224,6 +228,30 @@ module.exports={
 }
 
 },{}],6:[function(require,module,exports){
+let gql = require('graphql-tag')
+
+const mutations = {
+  deleteTask: gql `
+    mutation deleteTask($id: ID!) {
+      deleteTask(id: $id) {
+        id
+        }
+      }
+      `,
+  createTask: gql `
+    mutation createTask($text: String!, $done: Boolean!) {
+      createTask(text: $text, done: $done) {
+        id
+        text
+        done
+      }
+    }
+    `
+}
+
+module.exports = mutations
+
+},{"graphql-tag":27}],7:[function(require,module,exports){
 let gql = require('graphql-tag')
 
 const queries = {
@@ -240,7 +268,7 @@ const queries = {
 
 module.exports = queries
 
-},{"graphql-tag":66}],7:[function(require,module,exports){
+},{"graphql-tag":27}],8:[function(require,module,exports){
 let Vue = require('./vendor/vue')
 let Store = require('./state/store.js')
 let App = require('./components/App.vue')
@@ -257,7 +285,7 @@ new Vue({
   }
 })
 
-},{"./components/App.vue":1,"./graphql/apolloProvider.js":4,"./routing/router.js":8,"./state/store.js":13,"./vendor/vue":14}],8:[function(require,module,exports){
+},{"./components/App.vue":1,"./graphql/apolloProvider.js":4,"./routing/router.js":9,"./state/store.js":14,"./vendor/vue":15}],9:[function(require,module,exports){
 let Vue = require('../vendor/vue')
 let VueRouter = require('vue-router')
 let List = require('../components/List.vue')
@@ -272,7 +300,7 @@ const router = new VueRouter({
 
 module.exports = router
 
-},{"../components/List.vue":2,"../vendor/vue":14,"vue-router":103}],9:[function(require,module,exports){
+},{"../components/List.vue":2,"../vendor/vue":15,"vue-router":64}],10:[function(require,module,exports){
 const actions = {
   setObiAdvice: (context, text) => {
     context.commit('setObiAdvice', text)
@@ -293,7 +321,7 @@ const actions = {
 
 module.exports = actions
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 const state = {
   tasks: {
     items: [],
@@ -303,7 +331,7 @@ const state = {
 
 module.exports = state
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 const mapGetters = function (state, defaultObject) {
   let gettersObj = {}
   let keys = Object.keys(defaultObject)
@@ -318,7 +346,7 @@ const mapGetters = function (state, defaultObject) {
 
 module.exports = { mapGetters: mapGetters }
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 const mutations = function (state) {
   return {
     setObiAdvice (state, text) {
@@ -334,14 +362,16 @@ const mutations = function (state) {
       state.tasks.completed = tasks
     },
     addTask (state, task) {
-      state.tasks.items.push(task)
+      let workingItems = Object.assign([], state.tasks.items)
+      workingItems.push(task)
+      state.tasks.items = workingItems
     }
   }
 }
 
 module.exports = mutations
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var Vue = require('../vendor/vue')
 var Vuex = require('../vendor/vuex')
 
@@ -361,7 +391,7 @@ const store = new Vuex.Store({
 
 module.exports = store
 
-},{"../vendor/vue":14,"../vendor/vuex":15,"./actions.js":9,"./defaultState.js":10,"./getters.js":11,"./mutations.js":12}],14:[function(require,module,exports){
+},{"../vendor/vue":15,"../vendor/vuex":16,"./actions.js":10,"./defaultState.js":11,"./getters.js":12,"./mutations.js":13}],15:[function(require,module,exports){
 (function (global){
 /*!
  * Vue.js v2.5.1
@@ -10881,7 +10911,7 @@ return Vue$3;
 
 })));
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /**
  * vuex v3.0.0
  * (c) 2017 Evan You
@@ -11820,7 +11850,7 @@ var index = {
 return index;
 
 })));
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 (function (process){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('whatwg-fetch'), require('graphql/language/printer'), require('redux'), require('graphql-anywhere'), require('symbol-observable'), require('apollo-link-core')) :
@@ -15731,7 +15761,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 }).call(this,require('_process'))
-},{"_process":90,"apollo-link-core":17,"graphql-anywhere":63,"graphql/language/printer":77,"redux":96,"symbol-observable":98,"whatwg-fetch":106}],17:[function(require,module,exports){
+},{"_process":51,"apollo-link-core":18,"graphql-anywhere":24,"graphql/language/printer":38,"redux":57,"symbol-observable":59,"whatwg-fetch":67}],18:[function(require,module,exports){
 "use strict";
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
@@ -15747,7 +15777,7 @@ exports.Observable = zen_observable_ts_1.default;
 __export(require("zen-observable-ts"));
 exports.default = link_1.ApolloLink;
 
-},{"./link":18,"./linkUtils":19,"zen-observable-ts":107}],18:[function(require,module,exports){
+},{"./link":19,"./linkUtils":20,"zen-observable-ts":68}],19:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -15890,7 +15920,7 @@ var FunctionLink = (function (_super) {
 }(ApolloLink));
 exports.FunctionLink = FunctionLink;
 
-},{"./linkUtils":19,"graphql-tag":66,"zen-observable-ts":107}],19:[function(require,module,exports){
+},{"./linkUtils":20,"graphql-tag":27,"zen-observable-ts":68}],20:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -15966,480 +15996,7 @@ function makePromise(observable) {
 }
 exports.makePromise = makePromise;
 
-},{"./link":18}],20:[function(require,module,exports){
-module.exports = { "default": require("core-js/library/fn/object/define-properties"), __esModule: true };
-},{"core-js/library/fn/object/define-properties":23}],21:[function(require,module,exports){
-module.exports = { "default": require("core-js/library/fn/object/freeze"), __esModule: true };
-},{"core-js/library/fn/object/freeze":24}],22:[function(require,module,exports){
-"use strict";
-
-exports.__esModule = true;
-
-var _defineProperties = require("../core-js/object/define-properties");
-
-var _defineProperties2 = _interopRequireDefault(_defineProperties);
-
-var _freeze = require("../core-js/object/freeze");
-
-var _freeze2 = _interopRequireDefault(_freeze);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = function (strings, raw) {
-  return (0, _freeze2.default)((0, _defineProperties2.default)(strings, {
-    raw: {
-      value: (0, _freeze2.default)(raw)
-    }
-  }));
-};
-},{"../core-js/object/define-properties":20,"../core-js/object/freeze":21}],23:[function(require,module,exports){
-require('../../modules/es6.object.define-properties');
-var $Object = require('../../modules/_core').Object;
-module.exports = function defineProperties(T, D) {
-  return $Object.defineProperties(T, D);
-};
-
-},{"../../modules/_core":29,"../../modules/es6.object.define-properties":58}],24:[function(require,module,exports){
-require('../../modules/es6.object.freeze');
-module.exports = require('../../modules/_core').Object.freeze;
-
-},{"../../modules/_core":29,"../../modules/es6.object.freeze":59}],25:[function(require,module,exports){
-module.exports = function (it) {
-  if (typeof it != 'function') throw TypeError(it + ' is not a function!');
-  return it;
-};
-
-},{}],26:[function(require,module,exports){
-var isObject = require('./_is-object');
-module.exports = function (it) {
-  if (!isObject(it)) throw TypeError(it + ' is not an object!');
-  return it;
-};
-
-},{"./_is-object":42}],27:[function(require,module,exports){
-// false -> Array#indexOf
-// true  -> Array#includes
-var toIObject = require('./_to-iobject');
-var toLength = require('./_to-length');
-var toAbsoluteIndex = require('./_to-absolute-index');
-module.exports = function (IS_INCLUDES) {
-  return function ($this, el, fromIndex) {
-    var O = toIObject($this);
-    var length = toLength(O.length);
-    var index = toAbsoluteIndex(fromIndex, length);
-    var value;
-    // Array#includes uses SameValueZero equality algorithm
-    // eslint-disable-next-line no-self-compare
-    if (IS_INCLUDES && el != el) while (length > index) {
-      value = O[index++];
-      // eslint-disable-next-line no-self-compare
-      if (value != value) return true;
-    // Array#indexOf ignores holes, Array#includes - not
-    } else for (;length > index; index++) if (IS_INCLUDES || index in O) {
-      if (O[index] === el) return IS_INCLUDES || index || 0;
-    } return !IS_INCLUDES && -1;
-  };
-};
-
-},{"./_to-absolute-index":52,"./_to-iobject":54,"./_to-length":55}],28:[function(require,module,exports){
-var toString = {}.toString;
-
-module.exports = function (it) {
-  return toString.call(it).slice(8, -1);
-};
-
-},{}],29:[function(require,module,exports){
-var core = module.exports = { version: '2.5.1' };
-if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
-
-},{}],30:[function(require,module,exports){
-// optional / simple context binding
-var aFunction = require('./_a-function');
-module.exports = function (fn, that, length) {
-  aFunction(fn);
-  if (that === undefined) return fn;
-  switch (length) {
-    case 1: return function (a) {
-      return fn.call(that, a);
-    };
-    case 2: return function (a, b) {
-      return fn.call(that, a, b);
-    };
-    case 3: return function (a, b, c) {
-      return fn.call(that, a, b, c);
-    };
-  }
-  return function (/* ...args */) {
-    return fn.apply(that, arguments);
-  };
-};
-
-},{"./_a-function":25}],31:[function(require,module,exports){
-// 7.2.1 RequireObjectCoercible(argument)
-module.exports = function (it) {
-  if (it == undefined) throw TypeError("Can't call method on  " + it);
-  return it;
-};
-
-},{}],32:[function(require,module,exports){
-// Thank's IE8 for his funny defineProperty
-module.exports = !require('./_fails')(function () {
-  return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
-});
-
-},{"./_fails":36}],33:[function(require,module,exports){
-var isObject = require('./_is-object');
-var document = require('./_global').document;
-// typeof document.createElement is 'object' in old IE
-var is = isObject(document) && isObject(document.createElement);
-module.exports = function (it) {
-  return is ? document.createElement(it) : {};
-};
-
-},{"./_global":37,"./_is-object":42}],34:[function(require,module,exports){
-// IE 8- don't enum bug keys
-module.exports = (
-  'constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf'
-).split(',');
-
-},{}],35:[function(require,module,exports){
-var global = require('./_global');
-var core = require('./_core');
-var ctx = require('./_ctx');
-var hide = require('./_hide');
-var PROTOTYPE = 'prototype';
-
-var $export = function (type, name, source) {
-  var IS_FORCED = type & $export.F;
-  var IS_GLOBAL = type & $export.G;
-  var IS_STATIC = type & $export.S;
-  var IS_PROTO = type & $export.P;
-  var IS_BIND = type & $export.B;
-  var IS_WRAP = type & $export.W;
-  var exports = IS_GLOBAL ? core : core[name] || (core[name] = {});
-  var expProto = exports[PROTOTYPE];
-  var target = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE];
-  var key, own, out;
-  if (IS_GLOBAL) source = name;
-  for (key in source) {
-    // contains in native
-    own = !IS_FORCED && target && target[key] !== undefined;
-    if (own && key in exports) continue;
-    // export native or passed
-    out = own ? target[key] : source[key];
-    // prevent global pollution for namespaces
-    exports[key] = IS_GLOBAL && typeof target[key] != 'function' ? source[key]
-    // bind timers to global for call from export context
-    : IS_BIND && own ? ctx(out, global)
-    // wrap global constructors for prevent change them in library
-    : IS_WRAP && target[key] == out ? (function (C) {
-      var F = function (a, b, c) {
-        if (this instanceof C) {
-          switch (arguments.length) {
-            case 0: return new C();
-            case 1: return new C(a);
-            case 2: return new C(a, b);
-          } return new C(a, b, c);
-        } return C.apply(this, arguments);
-      };
-      F[PROTOTYPE] = C[PROTOTYPE];
-      return F;
-    // make static versions for prototype methods
-    })(out) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
-    // export proto methods to core.%CONSTRUCTOR%.methods.%NAME%
-    if (IS_PROTO) {
-      (exports.virtual || (exports.virtual = {}))[key] = out;
-      // export proto methods to core.%CONSTRUCTOR%.prototype.%NAME%
-      if (type & $export.R && expProto && !expProto[key]) hide(expProto, key, out);
-    }
-  }
-};
-// type bitmap
-$export.F = 1;   // forced
-$export.G = 2;   // global
-$export.S = 4;   // static
-$export.P = 8;   // proto
-$export.B = 16;  // bind
-$export.W = 32;  // wrap
-$export.U = 64;  // safe
-$export.R = 128; // real proto method for `library`
-module.exports = $export;
-
-},{"./_core":29,"./_ctx":30,"./_global":37,"./_hide":39}],36:[function(require,module,exports){
-module.exports = function (exec) {
-  try {
-    return !!exec();
-  } catch (e) {
-    return true;
-  }
-};
-
-},{}],37:[function(require,module,exports){
-// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-var global = module.exports = typeof window != 'undefined' && window.Math == Math
-  ? window : typeof self != 'undefined' && self.Math == Math ? self
-  // eslint-disable-next-line no-new-func
-  : Function('return this')();
-if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
-
-},{}],38:[function(require,module,exports){
-var hasOwnProperty = {}.hasOwnProperty;
-module.exports = function (it, key) {
-  return hasOwnProperty.call(it, key);
-};
-
-},{}],39:[function(require,module,exports){
-var dP = require('./_object-dp');
-var createDesc = require('./_property-desc');
-module.exports = require('./_descriptors') ? function (object, key, value) {
-  return dP.f(object, key, createDesc(1, value));
-} : function (object, key, value) {
-  object[key] = value;
-  return object;
-};
-
-},{"./_descriptors":32,"./_object-dp":44,"./_property-desc":49}],40:[function(require,module,exports){
-module.exports = !require('./_descriptors') && !require('./_fails')(function () {
-  return Object.defineProperty(require('./_dom-create')('div'), 'a', { get: function () { return 7; } }).a != 7;
-});
-
-},{"./_descriptors":32,"./_dom-create":33,"./_fails":36}],41:[function(require,module,exports){
-// fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = require('./_cof');
-// eslint-disable-next-line no-prototype-builtins
-module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
-  return cof(it) == 'String' ? it.split('') : Object(it);
-};
-
-},{"./_cof":28}],42:[function(require,module,exports){
-module.exports = function (it) {
-  return typeof it === 'object' ? it !== null : typeof it === 'function';
-};
-
-},{}],43:[function(require,module,exports){
-var META = require('./_uid')('meta');
-var isObject = require('./_is-object');
-var has = require('./_has');
-var setDesc = require('./_object-dp').f;
-var id = 0;
-var isExtensible = Object.isExtensible || function () {
-  return true;
-};
-var FREEZE = !require('./_fails')(function () {
-  return isExtensible(Object.preventExtensions({}));
-});
-var setMeta = function (it) {
-  setDesc(it, META, { value: {
-    i: 'O' + ++id, // object ID
-    w: {}          // weak collections IDs
-  } });
-};
-var fastKey = function (it, create) {
-  // return primitive with prefix
-  if (!isObject(it)) return typeof it == 'symbol' ? it : (typeof it == 'string' ? 'S' : 'P') + it;
-  if (!has(it, META)) {
-    // can't set metadata to uncaught frozen object
-    if (!isExtensible(it)) return 'F';
-    // not necessary to add metadata
-    if (!create) return 'E';
-    // add missing metadata
-    setMeta(it);
-  // return object ID
-  } return it[META].i;
-};
-var getWeak = function (it, create) {
-  if (!has(it, META)) {
-    // can't set metadata to uncaught frozen object
-    if (!isExtensible(it)) return true;
-    // not necessary to add metadata
-    if (!create) return false;
-    // add missing metadata
-    setMeta(it);
-  // return hash weak collections IDs
-  } return it[META].w;
-};
-// add metadata on freeze-family methods calling
-var onFreeze = function (it) {
-  if (FREEZE && meta.NEED && isExtensible(it) && !has(it, META)) setMeta(it);
-  return it;
-};
-var meta = module.exports = {
-  KEY: META,
-  NEED: false,
-  fastKey: fastKey,
-  getWeak: getWeak,
-  onFreeze: onFreeze
-};
-
-},{"./_fails":36,"./_has":38,"./_is-object":42,"./_object-dp":44,"./_uid":57}],44:[function(require,module,exports){
-var anObject = require('./_an-object');
-var IE8_DOM_DEFINE = require('./_ie8-dom-define');
-var toPrimitive = require('./_to-primitive');
-var dP = Object.defineProperty;
-
-exports.f = require('./_descriptors') ? Object.defineProperty : function defineProperty(O, P, Attributes) {
-  anObject(O);
-  P = toPrimitive(P, true);
-  anObject(Attributes);
-  if (IE8_DOM_DEFINE) try {
-    return dP(O, P, Attributes);
-  } catch (e) { /* empty */ }
-  if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported!');
-  if ('value' in Attributes) O[P] = Attributes.value;
-  return O;
-};
-
-},{"./_an-object":26,"./_descriptors":32,"./_ie8-dom-define":40,"./_to-primitive":56}],45:[function(require,module,exports){
-var dP = require('./_object-dp');
-var anObject = require('./_an-object');
-var getKeys = require('./_object-keys');
-
-module.exports = require('./_descriptors') ? Object.defineProperties : function defineProperties(O, Properties) {
-  anObject(O);
-  var keys = getKeys(Properties);
-  var length = keys.length;
-  var i = 0;
-  var P;
-  while (length > i) dP.f(O, P = keys[i++], Properties[P]);
-  return O;
-};
-
-},{"./_an-object":26,"./_descriptors":32,"./_object-dp":44,"./_object-keys":47}],46:[function(require,module,exports){
-var has = require('./_has');
-var toIObject = require('./_to-iobject');
-var arrayIndexOf = require('./_array-includes')(false);
-var IE_PROTO = require('./_shared-key')('IE_PROTO');
-
-module.exports = function (object, names) {
-  var O = toIObject(object);
-  var i = 0;
-  var result = [];
-  var key;
-  for (key in O) if (key != IE_PROTO) has(O, key) && result.push(key);
-  // Don't enum bug & hidden keys
-  while (names.length > i) if (has(O, key = names[i++])) {
-    ~arrayIndexOf(result, key) || result.push(key);
-  }
-  return result;
-};
-
-},{"./_array-includes":27,"./_has":38,"./_shared-key":50,"./_to-iobject":54}],47:[function(require,module,exports){
-// 19.1.2.14 / 15.2.3.14 Object.keys(O)
-var $keys = require('./_object-keys-internal');
-var enumBugKeys = require('./_enum-bug-keys');
-
-module.exports = Object.keys || function keys(O) {
-  return $keys(O, enumBugKeys);
-};
-
-},{"./_enum-bug-keys":34,"./_object-keys-internal":46}],48:[function(require,module,exports){
-// most Object methods by ES6 should accept primitives
-var $export = require('./_export');
-var core = require('./_core');
-var fails = require('./_fails');
-module.exports = function (KEY, exec) {
-  var fn = (core.Object || {})[KEY] || Object[KEY];
-  var exp = {};
-  exp[KEY] = exec(fn);
-  $export($export.S + $export.F * fails(function () { fn(1); }), 'Object', exp);
-};
-
-},{"./_core":29,"./_export":35,"./_fails":36}],49:[function(require,module,exports){
-module.exports = function (bitmap, value) {
-  return {
-    enumerable: !(bitmap & 1),
-    configurable: !(bitmap & 2),
-    writable: !(bitmap & 4),
-    value: value
-  };
-};
-
-},{}],50:[function(require,module,exports){
-var shared = require('./_shared')('keys');
-var uid = require('./_uid');
-module.exports = function (key) {
-  return shared[key] || (shared[key] = uid(key));
-};
-
-},{"./_shared":51,"./_uid":57}],51:[function(require,module,exports){
-var global = require('./_global');
-var SHARED = '__core-js_shared__';
-var store = global[SHARED] || (global[SHARED] = {});
-module.exports = function (key) {
-  return store[key] || (store[key] = {});
-};
-
-},{"./_global":37}],52:[function(require,module,exports){
-var toInteger = require('./_to-integer');
-var max = Math.max;
-var min = Math.min;
-module.exports = function (index, length) {
-  index = toInteger(index);
-  return index < 0 ? max(index + length, 0) : min(index, length);
-};
-
-},{"./_to-integer":53}],53:[function(require,module,exports){
-// 7.1.4 ToInteger
-var ceil = Math.ceil;
-var floor = Math.floor;
-module.exports = function (it) {
-  return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
-};
-
-},{}],54:[function(require,module,exports){
-// to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = require('./_iobject');
-var defined = require('./_defined');
-module.exports = function (it) {
-  return IObject(defined(it));
-};
-
-},{"./_defined":31,"./_iobject":41}],55:[function(require,module,exports){
-// 7.1.15 ToLength
-var toInteger = require('./_to-integer');
-var min = Math.min;
-module.exports = function (it) {
-  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
-};
-
-},{"./_to-integer":53}],56:[function(require,module,exports){
-// 7.1.1 ToPrimitive(input [, PreferredType])
-var isObject = require('./_is-object');
-// instead of the ES6 spec version, we didn't implement @@toPrimitive case
-// and the second argument - flag - preferred type is a string
-module.exports = function (it, S) {
-  if (!isObject(it)) return it;
-  var fn, val;
-  if (S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
-  if (typeof (fn = it.valueOf) == 'function' && !isObject(val = fn.call(it))) return val;
-  if (!S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
-  throw TypeError("Can't convert object to primitive value");
-};
-
-},{"./_is-object":42}],57:[function(require,module,exports){
-var id = 0;
-var px = Math.random();
-module.exports = function (key) {
-  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
-};
-
-},{}],58:[function(require,module,exports){
-var $export = require('./_export');
-// 19.1.2.3 / 15.2.3.7 Object.defineProperties(O, Properties)
-$export($export.S + $export.F * !require('./_descriptors'), 'Object', { defineProperties: require('./_object-dps') });
-
-},{"./_descriptors":32,"./_export":35,"./_object-dps":45}],59:[function(require,module,exports){
-// 19.1.2.5 Object.freeze(O)
-var isObject = require('./_is-object');
-var meta = require('./_meta').onFreeze;
-
-require('./_object-sap')('freeze', function ($freeze) {
-  return function freeze(it) {
-    return $freeze && isObject(it) ? $freeze(meta(it)) : it;
-  };
-});
-
-},{"./_is-object":42,"./_meta":43,"./_object-sap":48}],60:[function(require,module,exports){
+},{"./link":19}],21:[function(require,module,exports){
 "use strict";
 var storeUtils_1 = require("./storeUtils");
 function getDirectiveInfoFromField(field, variables) {
@@ -16501,7 +16058,7 @@ function shouldInclude(selection, variables) {
 }
 exports.shouldInclude = shouldInclude;
 
-},{"./storeUtils":64}],61:[function(require,module,exports){
+},{"./storeUtils":25}],22:[function(require,module,exports){
 "use strict";
 function checkDocument(doc) {
     if (doc.kind !== 'Document') {
@@ -16557,7 +16114,7 @@ function getMainDefinition(queryDoc) {
 }
 exports.getMainDefinition = getMainDefinition;
 
-},{}],62:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 "use strict";
 var getFromAST_1 = require("./getFromAST");
 var directives_1 = require("./directives");
@@ -16671,7 +16228,7 @@ function merge(dest, src) {
     });
 }
 
-},{"./directives":60,"./getFromAST":61,"./storeUtils":64}],63:[function(require,module,exports){
+},{"./directives":21,"./getFromAST":22,"./storeUtils":25}],24:[function(require,module,exports){
 "use strict";
 var utilities_1 = require("./utilities");
 exports.filter = utilities_1.filter;
@@ -16681,7 +16238,7 @@ var graphql_1 = require("./graphql");
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = graphql_1.graphql;
 
-},{"./graphql":62,"./utilities":65}],64:[function(require,module,exports){
+},{"./graphql":23,"./utilities":26}],25:[function(require,module,exports){
 "use strict";
 var SCALAR_TYPES = {
     StringValue: true,
@@ -16766,7 +16323,7 @@ function graphQLResultHasError(result) {
 }
 exports.graphQLResultHasError = graphQLResultHasError;
 
-},{}],65:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 "use strict";
 var graphql_1 = require("./graphql");
 function filter(doc, data) {
@@ -16837,7 +16394,7 @@ function propType(doc) {
 }
 exports.propType = propType;
 
-},{"./graphql":62}],66:[function(require,module,exports){
+},{"./graphql":23}],27:[function(require,module,exports){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -17017,7 +16574,7 @@ module.exports = gql;
 })));
 
 
-},{"graphql/language/parser":76}],67:[function(require,module,exports){
+},{"graphql/language/parser":37}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17133,7 +16690,7 @@ GraphQLError.prototype = Object.create(Error.prototype, {
   constructor: { value: GraphQLError },
   name: { value: 'GraphQLError' }
 });
-},{"../language/location":75}],68:[function(require,module,exports){
+},{"../language/location":36}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17167,7 +16724,7 @@ function formatError(error) {
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
-},{"../jsutils/invariant":72}],69:[function(require,module,exports){
+},{"../jsutils/invariant":33}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17209,7 +16766,7 @@ Object.defineProperty(exports, 'formatError', {
     return _formatError.formatError;
   }
 });
-},{"./GraphQLError":67,"./formatError":68,"./locatedError":70,"./syntaxError":71}],70:[function(require,module,exports){
+},{"./GraphQLError":28,"./formatError":29,"./locatedError":31,"./syntaxError":32}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17242,7 +16799,7 @@ function locatedError(originalError, nodes, path) {
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
-},{"./GraphQLError":67}],71:[function(require,module,exports){
+},{"./GraphQLError":28}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17306,7 +16863,7 @@ function whitespace(len) {
 function lpad(len, str) {
   return whitespace(len - str.length) + str;
 }
-},{"../language/location":75,"./GraphQLError":67}],72:[function(require,module,exports){
+},{"../language/location":36,"./GraphQLError":28}],33:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -17328,7 +16885,7 @@ function invariant(condition, message) {
     throw new Error(message);
   }
 }
-},{}],73:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17410,7 +16967,7 @@ var TYPE_EXTENSION_DEFINITION = exports.TYPE_EXTENSION_DEFINITION = 'TypeExtensi
 // Directive Definitions
 
 var DIRECTIVE_DEFINITION = exports.DIRECTIVE_DEFINITION = 'DirectiveDefinition';
-},{}],74:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17913,7 +17470,7 @@ function readName(source, position, line, col, prev) {
   }
   return new Tok(NAME, position, end, line, col, prev, slice.call(body, position, end));
 }
-},{"../error":69}],75:[function(require,module,exports){
+},{"../error":30}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17951,7 +17508,7 @@ function getLocation(source, position) {
 /**
  * Represents a location in a Source.
  */
-},{}],76:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18979,7 +18536,7 @@ function many(lexer, openKind, parseFn, closeKind) {
   }
   return nodes;
 }
-},{"../error":69,"./kinds":73,"./lexer":74,"./source":78}],77:[function(require,module,exports){
+},{"../error":30,"./kinds":34,"./lexer":35,"./source":39}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -19262,7 +18819,7 @@ function wrap(start, maybeString, end) {
 function indent(maybeString) {
   return maybeString && maybeString.replace(/\n/g, '\n  ');
 }
-},{"./visitor":79}],78:[function(require,module,exports){
+},{"./visitor":40}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -19303,7 +18860,7 @@ var Source = exports.Source = function Source(body, name, locationOffset) {
   !(this.locationOffset.line > 0) ? (0, _invariant2.default)(0, 'line in locationOffset is 1-indexed and must be positive') : void 0;
   !(this.locationOffset.column > 0) ? (0, _invariant2.default)(0, 'column in locationOffset is 1-indexed and must be positive') : void 0;
 };
-},{"../jsutils/invariant":72}],79:[function(require,module,exports){
+},{"../jsutils/invariant":33}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -19695,7 +19252,7 @@ function getVisitFn(visitor, kind, isLeaving) {
     }
   }
 }
-},{}],80:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 var root = require('./_root');
 
 /** Built-in value references. */
@@ -19703,7 +19260,7 @@ var Symbol = root.Symbol;
 
 module.exports = Symbol;
 
-},{"./_root":87}],81:[function(require,module,exports){
+},{"./_root":48}],42:[function(require,module,exports){
 var Symbol = require('./_Symbol'),
     getRawTag = require('./_getRawTag'),
     objectToString = require('./_objectToString');
@@ -19733,7 +19290,7 @@ function baseGetTag(value) {
 
 module.exports = baseGetTag;
 
-},{"./_Symbol":80,"./_getRawTag":84,"./_objectToString":85}],82:[function(require,module,exports){
+},{"./_Symbol":41,"./_getRawTag":45,"./_objectToString":46}],43:[function(require,module,exports){
 (function (global){
 /** Detect free variable `global` from Node.js. */
 var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
@@ -19741,7 +19298,7 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 module.exports = freeGlobal;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],83:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 var overArg = require('./_overArg');
 
 /** Built-in value references. */
@@ -19749,7 +19306,7 @@ var getPrototype = overArg(Object.getPrototypeOf, Object);
 
 module.exports = getPrototype;
 
-},{"./_overArg":86}],84:[function(require,module,exports){
+},{"./_overArg":47}],45:[function(require,module,exports){
 var Symbol = require('./_Symbol');
 
 /** Used for built-in method references. */
@@ -19797,7 +19354,7 @@ function getRawTag(value) {
 
 module.exports = getRawTag;
 
-},{"./_Symbol":80}],85:[function(require,module,exports){
+},{"./_Symbol":41}],46:[function(require,module,exports){
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
 
@@ -19821,7 +19378,7 @@ function objectToString(value) {
 
 module.exports = objectToString;
 
-},{}],86:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 /**
  * Creates a unary function that invokes `func` with its argument transformed.
  *
@@ -19838,7 +19395,7 @@ function overArg(func, transform) {
 
 module.exports = overArg;
 
-},{}],87:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 var freeGlobal = require('./_freeGlobal');
 
 /** Detect free variable `self`. */
@@ -19849,7 +19406,7 @@ var root = freeGlobal || freeSelf || Function('return this')();
 
 module.exports = root;
 
-},{"./_freeGlobal":82}],88:[function(require,module,exports){
+},{"./_freeGlobal":43}],49:[function(require,module,exports){
 /**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
  * and has a `typeof` result of "object".
@@ -19880,7 +19437,7 @@ function isObjectLike(value) {
 
 module.exports = isObjectLike;
 
-},{}],89:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 var baseGetTag = require('./_baseGetTag'),
     getPrototype = require('./_getPrototype'),
     isObjectLike = require('./isObjectLike');
@@ -19944,7 +19501,7 @@ function isPlainObject(value) {
 
 module.exports = isPlainObject;
 
-},{"./_baseGetTag":81,"./_getPrototype":83,"./isObjectLike":88}],90:[function(require,module,exports){
+},{"./_baseGetTag":42,"./_getPrototype":44,"./isObjectLike":49}],51:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -20130,7 +19687,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],91:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -20189,7 +19746,7 @@ function applyMiddleware() {
     };
   };
 }
-},{"./compose":94}],92:[function(require,module,exports){
+},{"./compose":55}],53:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -20241,7 +19798,7 @@ function bindActionCreators(actionCreators, dispatch) {
   }
   return boundActionCreators;
 }
-},{}],93:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -20387,7 +19944,7 @@ function combineReducers(reducers) {
   };
 }
 }).call(this,require('_process'))
-},{"./createStore":95,"./utils/warning":97,"_process":90,"lodash/isPlainObject":89}],94:[function(require,module,exports){
+},{"./createStore":56,"./utils/warning":58,"_process":51,"lodash/isPlainObject":50}],55:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -20424,7 +19981,7 @@ function compose() {
     };
   });
 }
-},{}],95:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -20686,7 +20243,7 @@ var ActionTypes = exports.ActionTypes = {
     replaceReducer: replaceReducer
   }, _ref2[_symbolObservable2['default']] = observable, _ref2;
 }
-},{"lodash/isPlainObject":89,"symbol-observable":98}],96:[function(require,module,exports){
+},{"lodash/isPlainObject":50,"symbol-observable":59}],57:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -20735,7 +20292,7 @@ exports.bindActionCreators = _bindActionCreators2['default'];
 exports.applyMiddleware = _applyMiddleware2['default'];
 exports.compose = _compose2['default'];
 }).call(this,require('_process'))
-},{"./applyMiddleware":91,"./bindActionCreators":92,"./combineReducers":93,"./compose":94,"./createStore":95,"./utils/warning":97,"_process":90}],97:[function(require,module,exports){
+},{"./applyMiddleware":52,"./bindActionCreators":53,"./combineReducers":54,"./compose":55,"./createStore":56,"./utils/warning":58,"_process":51}],58:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -20761,10 +20318,10 @@ function warning(message) {
   } catch (e) {}
   /* eslint-enable no-empty */
 }
-},{}],98:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 module.exports = require('./lib/index');
 
-},{"./lib/index":99}],99:[function(require,module,exports){
+},{"./lib/index":60}],60:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -20796,7 +20353,7 @@ if (typeof self !== 'undefined') {
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ponyfill":100}],100:[function(require,module,exports){
+},{"./ponyfill":61}],61:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -20820,7 +20377,7 @@ function symbolObservablePonyfill(root) {
 
 	return result;
 };
-},{}],101:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 (function (global){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
@@ -24401,7 +23958,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 })));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],102:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 var Vue // late bind
 var version
 var map = (window.__VUE_HOT_MAP__ = Object.create(null))
@@ -24620,7 +24177,7 @@ exports.reload = tryWrap(function (id, options) {
   })
 })
 
-},{}],103:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 (function (process){
 /**
   * vue-router v3.0.1
@@ -27249,7 +26806,7 @@ if (inBrowser && window.Vue) {
 module.exports = VueRouter;
 
 }).call(this,require('_process'))
-},{"_process":90}],104:[function(require,module,exports){
+},{"_process":51}],65:[function(require,module,exports){
 (function (process,global){
 /*!
  * Vue.js v2.5.2
@@ -35014,7 +34571,7 @@ Vue$3.nextTick(function () {
 module.exports = Vue$3;
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":90}],105:[function(require,module,exports){
+},{"_process":51}],66:[function(require,module,exports){
 var inserted = exports.cache = {}
 
 function noop () {}
@@ -35039,7 +34596,7 @@ exports.insert = function (css) {
   }
 }
 
-},{}],106:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 (function(self) {
   'use strict';
 
@@ -35502,7 +35059,7 @@ exports.insert = function (css) {
   self.fetch.polyfill = true
 })(typeof self !== 'undefined' ? self : this);
 
-},{}],107:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function cleanupSubscription(subscription) {
@@ -35902,4 +35459,4 @@ var Observable = (function () {
 }());
 exports.default = Observable;
 
-},{}]},{},[7]);
+},{}]},{},[8]);

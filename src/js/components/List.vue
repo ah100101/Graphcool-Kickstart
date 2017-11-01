@@ -24,6 +24,7 @@
 <script>
 import TaskForm from './TaskForm.vue'
 import TaskQueries from '../graphql/queries/tasks.js'
+import TaskMutations from '../graphql/mutations/tasks.js'
 
 export default {
   data: () => {
@@ -36,31 +37,48 @@ export default {
     allTasks: {
       query: TaskQueries.ascending,
       loadingKey: 'loading',
-    },
+    }
   },
-  created: function() {
-    this.getTasks()
+  created: async function() {
+    let tasks = await this.getTasks()
+    if (tasks) {
+      this.$store.dispatch('setTasks', tasks)
+    }
   },
   components: {
     taskform: TaskForm
   },
   methods: {
     completeTask: function(completedTask) {
+      this.deleteTask(completedTask.id)
+      
       let tasksTodo = this.tasks.filter((task) => { return task.id !== completedTask.id })
       let tasksCompleted = this.completedTasks
       tasksCompleted.push(completedTask)
+      
       this.$store.dispatch('setTasks', tasksTodo)
       this.$store.dispatch('setTasksCompleted', tasksCompleted)
     },
-    getTasks: function() {
-      let taskQuery = this.$apollo.queries.allTasks
-        .refetch()
-        .then( ({ data }) => {
-          this.$store.dispatch('setTasks', data.allTasks)
-        })
-        .catch( (error) => {
-          console.log(error)
-        })
+    deleteTask: async function(id) {
+      try {
+        let result = await this.$apollo
+          .mutate({
+            mutation: TaskMutations.deleteTask,
+            variables: { id }
+          })
+      } catch (error) {
+        console.log(error)
+        return
+      }
+    },
+    getTasks: async function() {
+      try {
+        let result = await this.$apollo.queries.allTasks.refetch()
+        return result.data.allTasks
+      } catch (error) {
+        console.log(error)
+        return
+      }
     }
   },
   computed: {
