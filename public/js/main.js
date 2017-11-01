@@ -362,9 +362,7 @@ const mutations = function (state) {
       state.tasks.completed = tasks
     },
     addTask (state, task) {
-      let workingItems = Object.assign([], state.tasks.items)
-      workingItems.push(task)
-      state.tasks.items = workingItems
+      state.tasks.items = state.tasks.items.concat([task])
     }
   }
 }
