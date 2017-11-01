@@ -1,10 +1,13 @@
 const mutations = function (state) {
   return {
-    setObiAdvice (state, text) {
-      state.obiAdvice = text
+    setTasks (state, tasks) {
+      state.tasks.items = tasks
     },
-    setAnakinThreat (state, text) {
-      state.anakinThreat = text
+    setTasksCompleted (state, tasks) {
+      state.tasks.completed = tasks
+    },
+    addTask (state, task) {
+      state.tasks.items = state.tasks.items.concat([task])
     }
   }
 }

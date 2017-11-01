@@ -1,9 +1,12 @@
 const actions = {
-  setObiAdvice: (context, text) => {
-    context.commit('setObiAdvice', text)
+  setTasks: (context, tasks) => {
+    context.commit('setTasks', tasks)
   },
-  setAnakinThreat: (context, text) => {
-    context.commit('setAnakinThreat', text)
+  setTasksCompleted: (context, tasks) => {
+    context.commit('setTasksCompleted', tasks)
+  },
+  addTask: (context, task) => {
+    context.commit('addTask', task)
   }
 }
 
