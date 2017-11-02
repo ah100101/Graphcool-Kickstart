@@ -25,6 +25,7 @@
 import TaskForm from './TaskForm.vue'
 import TaskQueries from '../graphql/queries/tasks.js'
 import TaskMutations from '../graphql/mutations/tasks.js'
+import config from '../graphql/graphql.json'
 
 export default {
   data: () => {
