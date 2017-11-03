@@ -381,7 +381,6 @@ const sendHandshake = (socket) => {
     const message = {
       type: 'init'
     }
-
     socket.send(JSON.stringify(message))
   }
 }
@@ -423,12 +422,18 @@ const VueGraphSocketPlugin = {
 
   install (Vue, options) {
     Vue.prototype.$graphsocket = {
+      socket: undefined,
       protocol: options.protocol,
       uri: options.uri,
       openConnection: function () {
         let socket = attemptOpen(options.uri, options.protocol)
         sendHandshake(socket)
         handleMessages(socket)
+        console.log('before')
+        console.log(this.socket)
+        this.socket = socket
+        console.log('after')
+        console.log(this.socket)
       },
       closeConnection: function () {
 
