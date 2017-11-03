@@ -49,12 +49,14 @@ const VueGraphSocketPlugin = {
 
   install (Vue, options) {
     Vue.prototype.$graphsocket = {
+      socket: undefined,
       protocol: options.protocol,
       uri: options.uri,
       openConnection: function () {
         let socket = attemptOpen(options.uri, options.protocol)
         sendHandshake(socket)
         handleMessages(socket)
+        this.socket = socket
       },
       closeConnection: function () {
 
