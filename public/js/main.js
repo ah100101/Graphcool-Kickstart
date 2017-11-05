@@ -354,7 +354,7 @@ let VueGraphSocket = require('./plugins/vue-graph-socket.js')
 
 Vue.use(VueGraphSocket, { 
   uri: 'wss://subscriptions.us-west-2.graph.cool/v1/cj99ayg117f5401353arjtfgy',
-  protocol: 'graphql-subscriptions' 
+  protocol: 'graphql-subscriptions'
 })
 
 new Vue({
@@ -429,14 +429,21 @@ const VueGraphSocketPlugin = {
         let socket = attemptOpen(options.uri, options.protocol)
         sendHandshake(socket)
         handleMessages(socket)
-        console.log('before')
-        console.log(this.socket)
         this.socket = socket
-        console.log('after')
-        console.log(this.socket)
       },
       closeConnection: function () {
 
+      },
+      sendMessage: function (message) {
+        this.socket.send(JSON.stringify.message)
+      },
+      subscribeToChanges: function (id, query) {
+        const message = {
+          id,
+          type: 'subscription_start',
+          query
+        }
+        this.sendMessage(message)
       }
     }
 

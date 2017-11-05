@@ -77,7 +77,7 @@ let VueGraphSocket = require('./plugins/vue-graph-socket.js')
 
 Vue.use(VueGraphSocket, { 
   uri: 'wss://subscriptions.us-west-2.graph.cool/v1/cj99ayg117f5401353arjtfgy',
-  protocol: 'graphql-subscriptions' 
+  protocol: 'graphql-subscriptions'
 })
 
 new Vue({
@@ -85,7 +85,7 @@ new Vue({
   store: Store,
   router: Router,
   apolloProvider,
-  created: function() {
+  created: function () {
     this.$graphsocket.openConnection()
   },
   components: {
