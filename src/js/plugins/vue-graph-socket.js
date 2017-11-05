@@ -60,6 +60,17 @@ const VueGraphSocketPlugin = {
       },
       closeConnection: function () {
 
+      },
+      sendMessage: function (message) {
+        this.socket.send(JSON.stringify.message)
+      },
+      subscribeToChanges: function (id, query) {
+        const message = {
+          id,
+          type: 'subscription_start',
+          query
+        }
+        this.sendMessage(message)
       }
     }
 
