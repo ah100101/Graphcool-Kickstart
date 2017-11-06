@@ -59,7 +59,7 @@ const VueGraphSocketPlugin = {
         this.socket = socket
       },
       closeConnection: function () {
-
+        this.socket.close()
       },
       sendMessage: function (message) {
         this.socket.send(JSON.stringify.message)
@@ -71,6 +71,12 @@ const VueGraphSocketPlugin = {
           query
         }
         this.sendMessage(message)
+      },
+      unsubscribeFromChanges: function (id) {
+        this.sendMessage({
+          id,
+          type: 'subscription_end'
+        })
       }
     }
 
