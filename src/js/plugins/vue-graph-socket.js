@@ -1,6 +1,5 @@
 const attemptOpen = (uri, protocol) => {
-  let webSocket = new WebSocket(uri, protocol)
-  return webSocket
+  return new WebSocket(uri, protocol)
 }
 
 const sendHandshake = (socket) => {
@@ -12,13 +11,13 @@ const sendHandshake = (socket) => {
   }
 }
 
-const handleMessages = (socket) => {
+const handleMessages = (socket, initCallback, subCallback) => {
   socket.onmessage = (event) => {
     const data = JSON.parse(event.data)
 
     switch (data.type) {
       case 'init_success': {
-        console.log('init_success, the handshake is complete')
+        initCallback()
         break
       }
       case 'init_fail': {
@@ -28,11 +27,10 @@ const handleMessages = (socket) => {
         }
       }
       case 'subscription_data': {
-        console.log('subscription data has been received', data)
+        subCallback(data)
         break
       }
       case 'subscription_success': {
-        console.log('subscription_success')
         break
       }
       case 'subscription_fail': {
@@ -49,28 +47,36 @@ const VueGraphSocketPlugin = {
 
   install (Vue, options) {
     Vue.prototype.$graphsocket = {
+      opened: false,
       socket: undefined,
       protocol: options.protocol,
       uri: options.uri,
-      openConnection: function () {
+      openConnection: function (initCallback, subCallback) {
         let socket = attemptOpen(options.uri, options.protocol)
         sendHandshake(socket)
-        handleMessages(socket)
+        handleMessages(socket, initCallback, subCallback)
         this.socket = socket
       },
       closeConnection: function () {
         this.socket.close()
+        this.opened = false
       },
       sendMessage: function (message) {
-        this.socket.send(JSON.stringify.message)
+        this.socket.send(JSON.stringify(message))
       },
-      subscribeToChanges: function (id, query) {
-        const message = {
-          id,
-          type: 'subscription_start',
-          query
+      subscribeToChanges: function (id, query, subCallback) {
+        if (this.opened) {
+          // send sub message and subscribe to sub with call back
+        } else {
+          this.openConnection(() => {
+            this.opened = true
+            this.socket.send(JSON.stringify({
+              id,
+              type: 'subscription_start',
+              query
+            }))
+          }, subCallback)
         }
-        this.sendMessage(message)
       },
       unsubscribeFromChanges: function (id) {
         this.sendMessage({

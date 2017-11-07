@@ -45,11 +45,29 @@ export default {
     if (tasks) {
       this.$store.dispatch('setTasks', tasks)
     }
+
+    let query = `
+      subscription newTask {
+        Task(filter: { mutation_in: [CREATED] }) {
+          mutation
+            node {
+              id
+              text
+              done
+            }
+        }
+      }
+      `
+
+    this.$graphsocket.subscribeToChanges('1', query, this.displayData)
   },
   components: {
     taskform: TaskForm
   },
   methods: {
+    displayData: function(data) {
+      console.log(data)
+    },
     completeTask: function(completedTask) {
       this.deleteTask(completedTask.id)
       
