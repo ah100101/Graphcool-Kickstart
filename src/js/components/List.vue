@@ -25,6 +25,7 @@
 import TaskForm from './TaskForm.vue'
 import TaskQueries from '../graphql/queries/tasks.js'
 import TaskMutations from '../graphql/mutations/tasks.js'
+import TaskSubscriptions from '../graphql/subscriptions/tasks.js'
 import config from '../graphql/graphql.json'
 
 export default {
@@ -46,23 +47,10 @@ export default {
       this.$store.dispatch('setTasks', tasks)
     }
 
-    let query = `
-      subscription newTask {
-        Task(filter: { mutation_in: [CREATED] }) {
-          mutation
-            node {
-              id
-              text
-              done
-            }
-        }
-      }
-      `
-
     this.$graphsocket.subscribeToChanges({
       id: '1',
-      query,
-      onSubData: this.displayData
+      query: TaskSubscriptions.create,
+      onSubData: this.addTask
     })
   },
   components: {
@@ -71,6 +59,12 @@ export default {
   methods: {
     displayData: function(data) {
       console.log(data)
+    },
+    addTask: function(data) {
+      if (data && data.payload && data.payload.data && data.payload.data.Task && data.payload.data.Task.node) {
+        let task = data.payload.data.Task.node
+        this.$store.dispatch('addTask', task)
+      }
     },
     completeTask: function(completedTask) {
       this.deleteTask(completedTask.id)
