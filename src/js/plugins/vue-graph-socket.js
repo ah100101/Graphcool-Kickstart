@@ -26,9 +26,7 @@ const handleMessages = (socket, handlers) => {
           if (handlers.onInitFail) {
             handlers.onInitFail(data)
           }
-          throw {
-            message: 'init_fail returned from WebSocket server',
-          }
+          throw { message: 'init_fail returned from WebSocket server' }
         }
         case 'subscription_data': {
           if (handlers.onSubData) {
@@ -46,9 +44,7 @@ const handleMessages = (socket, handlers) => {
           if (handlers.onSubFail) {
             handlers.onSubFail(data)
           }
-          throw {
-            message: 'subscription_fail returned from WebSocket server',
-          }
+          throw { message: 'subscription_fail returned from WebSocket server' }
         }
       }
     }
@@ -66,10 +62,7 @@ const VueGraphSocketPlugin = {
       openConnection: function (params) {
         let socket = attemptOpen(options.uri, options.protocol)
         sendHandshake(socket)
-        handleMessages(socket, {
-          onInitSuccess: params.onInitSuccess,
-          onSubData: params.onSubData
-        })
+        handleMessages(socket, params)
         this.socket = socket
       },
       closeConnection: function () {
@@ -80,28 +73,20 @@ const VueGraphSocketPlugin = {
         this.socket.send(JSON.stringify(message))
       },
       subscribeToChanges: function (params) {
+        let message = {
+          id: params.id,
+          type: 'subscription_start',
+          query: params.query
+        }
         if (this.opened) {
-          // send sub message and subscribe to sub with call back
+          this.sendMessage(message)
+          throw { message: 'on subscribe not implemented' }
         } else {
           params.onInitSuccess = () => {
             this.opened = true
-            this.socket.send(JSON.stringify({
-              id: params.id,
-              type: 'subscription_start',
-              query: params.query
-            }))
+            this.sendMessage(message)
           }
-
           this.openConnection(params)
-
-          // this.openConnection(() => {
-          //   this.opened = true
-          //   this.socket.send(JSON.stringify({
-          //     id: params.id,
-          //     type: 'subscription_start',
-          //     query: params.query
-          //   }))
-          // }, params.onSubData)
         }
       },
       unsubscribeFromChanges: function (id) {
