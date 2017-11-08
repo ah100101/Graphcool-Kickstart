@@ -59,7 +59,11 @@ export default {
       }
       `
 
-    this.$graphsocket.subscribeToChanges('1', query, this.displayData)
+    this.$graphsocket.subscribeToChanges({
+      id: '1',
+      query,
+      onSubData: this.displayData
+    })
   },
   components: {
     taskform: TaskForm
