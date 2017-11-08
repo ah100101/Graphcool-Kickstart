@@ -14,6 +14,9 @@ export default {
       
     }
   },
+  created: function() {
+    
+  },
   components: {
 
   },

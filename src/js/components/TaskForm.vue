@@ -34,7 +34,6 @@ export default {
           }
         })
         .then(({data}) => {
-          this.$store.dispatch('addTask', data.createTask)
           this.taskTitle = ''
         })
       }

@@ -1,4 +1,4 @@
-# Starter Kit - Graphcool
+# Graphcool Vue.js Kickstart
 
 ## Description
 This is a clean graphcool starter kit utilizing vue for the front-end.

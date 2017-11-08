@@ -1,5 +1,6 @@
 {
     "useDevTools": true,
     "simpleApiEndpoint": "https://api.graph.cool/simple/v1/cj99ayg117f5401353arjtfgy",
-    "relayApiEndpoint": "https://api.graph.cool/relay/v1/cj99ayg117f5401353arjtfgy"
+    "relayApiEndpoint": "https://api.graph.cool/relay/v1/cj99ayg117f5401353arjtfgy",
+    "subscriptionsEndpoint": "wss://subscriptions.us-west-2.graph.cool/v1/cj99ayg117f5401353arjtfgy"
 }
