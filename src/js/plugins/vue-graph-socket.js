@@ -11,32 +11,44 @@ const sendHandshake = (socket) => {
   }
 }
 
-const handleMessages = (socket, initCallback, subCallback) => {
-  socket.onmessage = (event) => {
-    const data = JSON.parse(event.data)
-
-    switch (data.type) {
-      case 'init_success': {
-        initCallback()
-        break
-      }
-      case 'init_fail': {
-        throw {
-          message: 'init_fail returned from WebSocket server',
-          data
+const handleMessages = (socket, handlers) => {
+  if (socket && handlers) {
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data)
+      switch (data.type) {
+        case 'init_success': {
+          if (handlers.onInitSuccess) {
+            handlers.onInitSuccess()
+          }
+          break
         }
-      }
-      case 'subscription_data': {
-        subCallback(data)
-        break
-      }
-      case 'subscription_success': {
-        break
-      }
-      case 'subscription_fail': {
-        throw {
-          message: 'subscription_fail returned from WebSocket server',
-          data
+        case 'init_fail': {
+          if (handlers.onInitFail) {
+            handlers.onInitFail(data)
+          }
+          throw {
+            message: 'init_fail returned from WebSocket server',
+          }
+        }
+        case 'subscription_data': {
+          if (handlers.onSubData) {
+            handlers.onSubData(data)
+          }
+          break
+        }
+        case 'subscription_success': {
+          if (handlers.onSubSuccess) {
+            handlers.onSubSuccess()
+          }
+          break
+        }
+        case 'subscription_fail': {
+          if (handlers.onSubFail) {
+            handlers.onSubFail(data)
+          }
+          throw {
+            message: 'subscription_fail returned from WebSocket server',
+          }
         }
       }
     }
@@ -51,10 +63,13 @@ const VueGraphSocketPlugin = {
       socket: undefined,
       protocol: options.protocol,
       uri: options.uri,
-      openConnection: function (initCallback, subCallback) {
+      openConnection: function (params) {
         let socket = attemptOpen(options.uri, options.protocol)
         sendHandshake(socket)
-        handleMessages(socket, initCallback, subCallback)
+        handleMessages(socket, {
+          onInitSuccess: params.onInitSuccess,
+          onSubData: params.onSubData
+        })
         this.socket = socket
       },
       closeConnection: function () {
@@ -64,18 +79,29 @@ const VueGraphSocketPlugin = {
       sendMessage: function (message) {
         this.socket.send(JSON.stringify(message))
       },
-      subscribeToChanges: function (id, query, subCallback) {
+      subscribeToChanges: function (params) {
         if (this.opened) {
           // send sub message and subscribe to sub with call back
         } else {
-          this.openConnection(() => {
+          params.onInitSuccess = () => {
             this.opened = true
             this.socket.send(JSON.stringify({
-              id,
+              id: params.id,
               type: 'subscription_start',
-              query
+              query: params.query
             }))
-          }, subCallback)
+          }
+
+          this.openConnection(params)
+
+          // this.openConnection(() => {
+          //   this.opened = true
+          //   this.socket.send(JSON.stringify({
+          //     id: params.id,
+          //     type: 'subscription_start',
+          //     query: params.query
+          //   }))
+          // }, params.onSubData)
         }
       },
       unsubscribeFromChanges: function (id) {
