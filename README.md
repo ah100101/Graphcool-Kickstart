@@ -1,7 +1,7 @@
 # Graphcool Vue.js Kickstart
 
 ## Description
-This is a clean graphcool starter kit utilizing vue for the front-end.
+This is a graphcool starter kit utilizing vue for the front-end.
 
 This project's front-end utilizes:
 - ES6
@@ -84,7 +84,7 @@ src/js/graphql directory should contain a graphql.json file with the following p
  }
 ```
 
-These files can be easily created using the graphcool CLI 
+These files can be easily created with the graphcool CLI 
 
 #### Update schemas and delete types via graphcool CLI
 
