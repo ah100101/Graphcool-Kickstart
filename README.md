@@ -18,8 +18,10 @@ This project's front-end utilizes:
 2. cd to src directory
 3. Run:
     > npm install
+
+    > gulp build
     
-    > http-server public start
+    > http-server ../public start
 
 ## Getting started using Graphcool
 1. Install graphcool CLI
