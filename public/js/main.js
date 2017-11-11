@@ -337,6 +337,14 @@ new Vue({
 })
 
 },{"./components/App.vue":1,"./graphql/apolloProvider.js":4,"./plugins/vue-graph-socket.js":10,"./routing/router.js":11,"./state/store.js":16,"./vendor/vue":17}],10:[function(require,module,exports){
+let subscriptionHandlers = {
+  init_success: {},
+  init_fail: {},
+  subscription_data: {},
+  subscription_success: {},
+  subscription_fail: {}
+}
+
 const attemptOpen = (uri, protocol) => {
   return new WebSocket(uri, protocol)
 }
@@ -354,6 +362,7 @@ const handleMessages = (socket, handlers) => {
   if (socket && handlers) {
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data)
+      console.log(data)
       switch (data.type) {
         case 'init_success': {
           if (handlers.onInitSuccess) {
@@ -368,9 +377,11 @@ const handleMessages = (socket, handlers) => {
           throw { message: 'init_fail returned from WebSocket server' }
         }
         case 'subscription_data': {
-          if (handlers.onSubData) {
-            handlers.onSubData(data)
-          }
+            if (subscriptionHandlers.subscription_data[data.id]) {
+              subscriptionHandlers.subscription_data[data.id](data)
+            } else {
+              throw { message: `subscription_data handler not found for id = ${data.id}` }
+            }
           break
         }
         case 'subscription_success': {
@@ -391,7 +402,6 @@ const handleMessages = (socket, handlers) => {
 }
 
 const VueGraphSocketPlugin = {
-
   install (Vue, options) {
     Vue.prototype.$graphsocket = {
       opened: false,
@@ -417,9 +427,11 @@ const VueGraphSocketPlugin = {
           type: 'subscription_start',
           query: params.query
         }
+
+        subscriptionHandlers.subscription_data[params.id] = params.onSubData
+
         if (this.opened) {
           this.sendMessage(message)
-          throw { message: 'on subscribe not implemented' }
         } else {
           params.onInitSuccess = () => {
             this.opened = true
