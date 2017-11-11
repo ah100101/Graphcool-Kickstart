@@ -69,7 +69,7 @@ type Task @model {
 }
 ```
 
-src/js/graphql directory should contain a .json file with the following properties:
+src/js/graphql directory should contain a graphql.json file with the following properties:
 
 ```   
  {
@@ -88,12 +88,12 @@ These files can be easily created using the graphcool CLI
 
 #### Update schemas and delete types via graphcool CLI
 
-##### Updating schema
+Updating schema
 1. Update type(s) in project.graphcool
 2. Use push to update schema
     > graphcool push 
 
-##### Deleting types
+Deleting types
 1. Delete type(s) in project.graphcool
 2. Force push to delete type (removes data)
     > graphcool push --force
