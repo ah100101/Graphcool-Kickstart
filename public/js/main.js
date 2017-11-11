@@ -338,7 +338,11 @@ new Vue({
 
 },{"./components/App.vue":1,"./graphql/apolloProvider.js":4,"./plugins/vue-graph-socket.js":10,"./routing/router.js":11,"./state/store.js":16,"./vendor/vue":17}],10:[function(require,module,exports){
 let subscriptionHandlers = {
-  subscription_data: {}
+  init_success: {},
+  init_fail: {},
+  subscription_data: {},
+  subscription_success: {},
+  subscription_fail: {}
 }
 
 const attemptOpen = (uri, protocol) => {
@@ -358,6 +362,7 @@ const handleMessages = (socket, handlers) => {
   if (socket && handlers) {
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data)
+      console.log(data)
       switch (data.type) {
         case 'init_success': {
           if (handlers.onInitSuccess) {
