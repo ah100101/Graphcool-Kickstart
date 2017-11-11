@@ -38,9 +38,9 @@ A working example with this plugin as part of this project. TODOs that are added
 ### Using Graphcool
 
 #### Project configuration
-- project.graphcool file should be placed within server directory
+project.graphcool file should be placed within server directory
 
-    Example for this project:
+Example for this project:
 ```
 # project: [project id]
 # version: 2
@@ -69,7 +69,7 @@ type Task @model {
 }
 ```
 
-- src/js/graphql directory should contain a .json file with the following properties:
+src/js/graphql directory should contain a .json file with the following properties:
 
 ```   
  {
