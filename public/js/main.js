@@ -362,7 +362,6 @@ const handleMessages = (socket, handlers) => {
   if (socket && handlers) {
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data)
-      console.log(data)
       switch (data.type) {
         case 'init_success': {
           if (handlers.onInitSuccess) {
