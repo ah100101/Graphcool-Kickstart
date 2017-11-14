@@ -122,4 +122,4 @@ const VueGraphSocketPlugin = {
   }
 }
 
-module.exports = VueGraphSocketPlugin
+export default VueGraphSocketPlugin

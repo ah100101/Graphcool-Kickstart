@@ -1,4 +1,4 @@
-let gql = require('graphql-tag')
+import gql from 'graphql-tag'
 
 const queries = {
   ascending: gql `
@@ -12,4 +12,4 @@ const queries = {
     `
 }
 
-module.exports = queries
+export default queries

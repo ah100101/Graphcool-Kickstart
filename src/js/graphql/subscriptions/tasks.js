@@ -8,9 +8,9 @@ const subscriptions = {
           text
           done
         }
+      }
     }
-  }
-  `
+    `
 }
 
-module.exports = subscriptions
+export default subscriptions

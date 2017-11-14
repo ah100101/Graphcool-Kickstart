@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import TaskMutations from '../graphql/mutations/tasks.js'
+import TaskMutations from '../js/graphql/mutations/tasks.js'
 
 export default {
   data () {

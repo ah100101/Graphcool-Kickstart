@@ -1,7 +1,8 @@
-let Vue = require('../vendor/vue')
-let { ApolloClient, createBatchingNetworkInterface } = require('apollo-client')
+import Vue from 'vue'
+import { ApolloClient, createBatchingNetworkInterface } from 'apollo-client'
+import config from './graphql.json'
+
 let VueApollo = require('vue-apollo')
-let config = require('./graphql.json')
 
 const apolloClient = new ApolloClient({
   networkInterface: createBatchingNetworkInterface({
@@ -16,4 +17,4 @@ const apolloProvider = new VueApollo.ApolloProvider({
   defaultClient: apolloClient
 })
 
-module.exports = apolloProvider
+export default apolloProvider

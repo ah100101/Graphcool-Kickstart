@@ -12,4 +12,4 @@ const mutations = function (state) {
   }
 }
 
-module.exports = mutations
+export default mutations

@@ -23,10 +23,10 @@
 
 <script>
 import TaskForm from './TaskForm.vue'
-import TaskQueries from '../graphql/queries/tasks.js'
-import TaskMutations from '../graphql/mutations/tasks.js'
-import TaskSubscriptions from '../graphql/subscriptions/tasks.js'
-import config from '../graphql/graphql.json'
+import TaskQueries from '../js/graphql/queries/tasks.js'
+import TaskMutations from '../js/graphql/mutations/tasks.js'
+import TaskSubscriptions from '../js/graphql/subscriptions/tasks.js'
+import config from '../js/graphql/graphql.json'
 
 export default {
   data: () => {

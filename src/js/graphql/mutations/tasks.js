@@ -1,4 +1,4 @@
-let gql = require('graphql-tag')
+import gql from 'graphql-tag'
 
 const mutations = {
   deleteTask: gql `
@@ -19,4 +19,4 @@ const mutations = {
     `
 }
 
-module.exports = mutations
+export default mutations

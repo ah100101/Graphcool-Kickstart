@@ -1,10 +1,10 @@
-var Vue = require('../vendor/vue')
-var Vuex = require('../vendor/vuex')
+import Vue from 'vue'
+import Vuex from 'vuex'
 
-var Getters = require('./getters.js')
-var Actions = require('./actions.js')
-var Mutations = require('./mutations.js')
-var State = require('./defaultState.js')
+import Getters from './getters.js'
+import Actions from './actions.js'
+import Mutations from './mutations.js'
+import State from './defaultState.js'
 
 Vue.use(Vuex)
 
@@ -15,4 +15,4 @@ const store = new Vuex.Store({
   getters: Getters.mapGetters(this.state, State)
 })
 
-module.exports = store
+export default store

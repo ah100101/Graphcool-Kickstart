@@ -1,6 +1,6 @@
-let Vue = require('../vendor/vue')
-let VueRouter = require('vue-router')
-let List = require('../components/List.vue')
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import List from '../../components/List.vue'
 
 Vue.use(VueRouter)
 
@@ -10,4 +10,4 @@ const router = new VueRouter({
   ]
 })
 
-module.exports = router
+export default router

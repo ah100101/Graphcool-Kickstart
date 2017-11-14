@@ -10,4 +10,4 @@ const mapGetters = function (state, defaultObject) {
   return gettersObj
 }
 
-module.exports = { mapGetters: mapGetters }
+export default { mapGetters: mapGetters }
